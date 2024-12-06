@@ -1,0 +1,12 @@
+targets:
+  $default:
+    builders:
+      source_gen|combining_builder:
+        options:
+          ignore_for_file:
+          - non_constant_identifier_names
+      json_serializable:
+        options:
+          checked: false
+          explicit_to_json: true
+          include_if_null: false
