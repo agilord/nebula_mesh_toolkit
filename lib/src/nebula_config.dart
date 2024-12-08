@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:json_annotation/json_annotation.dart';
 import 'package:yaml_edit/yaml_edit.dart';
 
@@ -5,12 +7,12 @@ part 'nebula_config.g.dart';
 
 /// Configuration from https://nebula.defined.net/docs/config/
 @JsonSerializable()
-class NebulaConfig {
+class Nebula {
   /// Defines the path of each file required for a Nebula host: CA certificate, host certificate, and host key.
   /// Each of these files can also be stored inline as YAML multiline strings.
   ///
   /// https://nebula.defined.net/docs/config/pki/
-  final PkiConfig pki;
+  final Pki pki;
 
   /// The static host map defines a set of hosts with fixed IP addresses on the
   /// internet (or any network). A host can have multiple fixed IP addresses
@@ -24,18 +26,18 @@ class NebulaConfig {
   final Map<String, List<String>>? staticHostMap;
 
   /// https://nebula.defined.net/docs/config/lighthouse/
-  final LighthouseConfig lighthouse;
+  final Lighthouse lighthouse;
 
   /// `listen` sets the UDP port Nebula will use for sending/receiving traffic and for handshakes.
   ///
   /// https://nebula.defined.net/docs/config/listen/
-  final ListenConfig? listen;
+  final Listen? listen;
 
   /// `punchy` configures the sending of inbound/outbound packets at a regular
   /// interval to avoid expiration of firewall NAT mappings.
   ///
   /// https://nebula.defined.net/docs/config/punchy/
-  final PunchyConfig? punchy;
+  final Punchy? punchy;
 
   /// DANGER: This value must be identical on ALL nodes and lighthouses.
   ///         Nebula does not support the use of different ciphers simultaneously!
@@ -51,10 +53,10 @@ class NebulaConfig {
   /// can make it difficult to establish direct connections between two nodes.)
   ///
   /// https://nebula.defined.net/docs/config/relay/
-  final RelayConfig? relay;
+  final Relay? relay;
 
   /// https://nebula.defined.net/docs/config/tun/
-  final TunConfig? tun;
+  final Tun? tun;
 
   /// The default state of the Nebula interface host firewall is deny all for all
   /// inbound and outbound traffic. Firewall rules can be added to allow traffic
@@ -62,9 +64,9 @@ class NebulaConfig {
   /// define a deny rule.
   ///
   /// https://nebula.defined.net/docs/config/firewall/
-  final FirewallConfig? firewall;
+  final Firewall? firewall;
 
-  NebulaConfig({
+  Nebula({
     required this.pki,
     this.staticHostMap,
     required this.lighthouse,
@@ -76,10 +78,9 @@ class NebulaConfig {
     this.firewall,
   });
 
-  factory NebulaConfig.fromJson(Map<String, dynamic> map) =>
-      _$NebulaConfigFromJson(map);
+  factory Nebula.fromJson(Map<String, dynamic> map) => _$NebulaFromJson(map);
 
-  Map<String, dynamic> toJson() => _$NebulaConfigToJson(this);
+  Map<String, dynamic> toJson() => _$NebulaToJson(this);
 
   String toYamlString() {
     final editor = YamlEditor('')..update([], toJson());
@@ -92,7 +93,7 @@ class NebulaConfig {
 ///
 /// https://nebula.defined.net/docs/config/pki/
 @JsonSerializable()
-class PkiConfig {
+class Pki {
   /// The ca is a collection of one or more certificate authorities this host should trust.
   /// In the above example, /etc/nebula/ca.crt contains PEM-encoded data for each CA we should
   /// trust, concatenated into a single file. The following example shows a CA cert inlined
@@ -137,7 +138,7 @@ class PkiConfig {
   @JsonKey(name: 'disconnect_invalid')
   final bool? disconnectInvalid;
 
-  PkiConfig({
+  Pki({
     required this.ca,
     required this.cert,
     required this.key,
@@ -145,15 +146,14 @@ class PkiConfig {
     this.disconnectInvalid,
   });
 
-  factory PkiConfig.fromJson(Map<String, dynamic> map) =>
-      _$PkiConfigFromJson(map);
+  factory Pki.fromJson(Map<String, dynamic> map) => _$PkiFromJson(map);
 
-  Map<String, dynamic> toJson() => _$PkiConfigToJson(this);
+  Map<String, dynamic> toJson() => _$PkiToJson(this);
 }
 
 /// https://nebula.defined.net/docs/config/lighthouse/
 @JsonSerializable()
-class LighthouseConfig {
+class Lighthouse {
   /// `am_lighthouse` is used to enable lighthouse functionality for a node.
   /// This should ONLY be true on nodes you have configured to be lighthouses in your network
   ///
@@ -168,22 +168,22 @@ class LighthouseConfig {
   /// https://nebula.defined.net/docs/config/lighthouse/#lighthousehosts
   final List<String>? hosts;
 
-  LighthouseConfig({
+  Lighthouse({
     this.amLighthouse,
     this.hosts,
   });
 
-  factory LighthouseConfig.fromJson(Map<String, dynamic> map) =>
-      _$LighthouseConfigFromJson(map);
+  factory Lighthouse.fromJson(Map<String, dynamic> map) =>
+      _$LighthouseFromJson(map);
 
-  Map<String, dynamic> toJson() => _$LighthouseConfigToJson(this);
+  Map<String, dynamic> toJson() => _$LighthouseToJson(this);
 }
 
 /// `listen` sets the UDP port Nebula will use for sending/receiving traffic and for handshakes.
 ///
 /// https://nebula.defined.net/docs/config/listen/
 @JsonSerializable()
-class ListenConfig {
+class Listen {
   /// `host` is the ip of the interface to use when binding the listener.
   /// The default is `0.0.0.0` for all IPv4 interfaces.
   /// To enable IPv6, use `[::]` instead. host may also contain a hostname.
@@ -202,15 +202,14 @@ class ListenConfig {
 
   // TODO: batch, read_buffer, write_buffer
 
-  ListenConfig({
+  Listen({
     this.host,
     this.port,
   });
 
-  factory ListenConfig.fromJson(Map<String, dynamic> map) =>
-      _$ListenConfigFromJson(map);
+  factory Listen.fromJson(Map<String, dynamic> map) => _$ListenFromJson(map);
 
-  Map<String, dynamic> toJson() => _$ListenConfigToJson(this);
+  Map<String, dynamic> toJson() => _$ListenToJson(this);
 }
 
 /// `punchy` configures the sending of inbound/outbound packets at a regular
@@ -218,7 +217,7 @@ class ListenConfig {
 ///
 /// https://nebula.defined.net/docs/config/punchy/
 @JsonSerializable()
-class PunchyConfig {
+class Punchy {
   /// When enabled, Nebula will periodically send "empty" packets to the
   /// underlay IP addresses of hosts it has established tunnels to in order
   /// to maintain the "hole" punched in the NAT's firewall.
@@ -226,14 +225,13 @@ class PunchyConfig {
   /// https://nebula.defined.net/docs/config/punchy/#punchypunch
   final bool? punch;
 
-  PunchyConfig({
+  Punchy({
     this.punch,
   });
 
-  factory PunchyConfig.fromJson(Map<String, dynamic> map) =>
-      _$PunchyConfigFromJson(map);
+  factory Punchy.fromJson(Map<String, dynamic> map) => _$PunchyFromJson(map);
 
-  Map<String, dynamic> toJson() => _$PunchyConfigToJson(this);
+  Map<String, dynamic> toJson() => _$PunchyToJson(this);
 }
 
 /// Relay hosts forward traffic between two peers. This can be useful if two
@@ -242,7 +240,7 @@ class PunchyConfig {
 ///
 /// https://nebula.defined.net/docs/config/relay/
 @JsonSerializable()
-class RelayConfig {
+class Relay {
   /// `relays` is a list of Nebula IPs that peers can use to relay packets to
   /// this host. IPs in this list must have am_relay set to true in their
   /// configs, otherwise they will reject relay requests.
@@ -265,21 +263,28 @@ class RelayConfig {
   @JsonKey(name: 'use_relays')
   final bool? useRelays;
 
-  RelayConfig({
+  Relay({
     this.relays,
     this.amRelay,
     this.useRelays,
   });
 
-  factory RelayConfig.fromJson(Map<String, dynamic> map) =>
-      _$RelayConfigFromJson(map);
+  Relay replace({List<String>? relays}) {
+    return Relay(
+      relays: relays ?? this.relays,
+      amRelay: amRelay,
+      useRelays: useRelays,
+    );
+  }
 
-  Map<String, dynamic> toJson() => _$RelayConfigToJson(this);
+  factory Relay.fromJson(Map<String, dynamic> map) => _$RelayFromJson(map);
+
+  Map<String, dynamic> toJson() => _$RelayToJson(this);
 }
 
 /// https://nebula.defined.net/docs/config/tun/
 @JsonSerializable()
-class TunConfig {
+class Tun {
   /// `dev` sets the interface name for your nebula interface.
   /// If not set, a default will be chosen by the OS.
   /// - For macOS: Not required. If set, must be in the form `utun[0-9]+`.
@@ -288,14 +293,13 @@ class TunConfig {
   /// https://nebula.defined.net/docs/config/tun/#tundev
   final String? dev;
 
-  TunConfig({
+  Tun({
     this.dev,
   });
 
-  factory TunConfig.fromJson(Map<String, dynamic> map) =>
-      _$TunConfigFromJson(map);
+  factory Tun.fromJson(Map<String, dynamic> map) => _$TunFromJson(map);
 
-  Map<String, dynamic> toJson() => _$TunConfigToJson(this);
+  Map<String, dynamic> toJson() => _$TunToJson(this);
 }
 
 /// The default state of the Nebula interface host firewall is deny all for all
@@ -305,22 +309,22 @@ class TunConfig {
 ///
 /// https://nebula.defined.net/docs/config/firewall/
 @JsonSerializable()
-class FirewallConfig {
+class Firewall {
   /// https://nebula.defined.net/docs/config/firewall/#firewalloutbound
   final List<FirewallRule>? outbound;
 
   /// https://nebula.defined.net/docs/config/firewall/#firewallinbound
   final List<FirewallRule>? inbound;
 
-  FirewallConfig({
+  Firewall({
     this.outbound,
     this.inbound,
   });
 
-  factory FirewallConfig.fromJson(Map<String, dynamic> map) =>
-      _$FirewallConfigFromJson(map);
+  factory Firewall.fromJson(Map<String, dynamic> map) =>
+      _$FirewallFromJson(map);
 
-  Map<String, dynamic> toJson() => _$FirewallConfigToJson(this);
+  Map<String, dynamic> toJson() => _$FirewallToJson(this);
 }
 
 /// https://nebula.defined.net/docs/config/firewall/
@@ -342,4 +346,14 @@ class FirewallRule {
       _$FirewallRuleFromJson(map);
 
   Map<String, dynamic> toJson() => _$FirewallRuleToJson(this);
+
+  late final _asJsonString = json.encode(toJson());
+
+  @override
+  int get hashCode => _asJsonString.hashCode;
+
+  @override
+  bool operator ==(Object other) {
+    return (other is FirewallRule) && _asJsonString == other._asJsonString;
+  }
 }

@@ -1,0 +1,34 @@
+id: 1 # the tun device id + network identifier
+cipher: aes
+
+templates:
+  - groups: ['lighthouse']
+    listen:
+      host: '0.0.0.0'
+      port: 4242
+    relay:
+      am_relay: true
+    firewall_presets: [any]
+    hosts:
+      - name: lighthouse-1
+        address: 192.168.100.1/24
+        publicAddresses: ['nebula.example.com:4242', '12.34.56.78:4242']
+
+  - groups: ['server']
+    punchy:
+      punch: true
+    relay:
+      relays: ['@lighthouse']
+    firewall_presets: [any]
+    hosts:
+      - name: server-1
+        address: 192.168.100.10/24
+  
+  - groups: ['admin']
+    hosts:
+      - name: notebook-1
+        address: 192.168.100.20/24
+        os: windows
+      - name: mobile-1
+        address: 192.168.100.21/24
+        os: android

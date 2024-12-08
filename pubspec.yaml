@@ -1,6 +1,6 @@
 name: nebula_mesh_toolkit
 description: CLI toolkit and configuration helper for Nebula mesh/overlay networks.
-version: 0.1.0
+version: 0.2.0
 repository: https://github.com/agilord/nebula_mesh_toolkit
 topics:
   - cli
@@ -13,8 +13,12 @@ environment:
   sdk: ^3.5.0
 
 dependencies:
+  archive: ^4.0.0
   args: ^2.4.2
+  http: ^1.2.2
   json_annotation: ^4.9.0
+  path: ^1.9.1
+  yaml: ^3.1.2
   yaml_edit: ^2.2.1
 
 dev_dependencies:

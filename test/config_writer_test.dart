@@ -4,8 +4,8 @@ import 'package:test/test.dart';
 void main() {
   group('config writer', () {
     test('all fields', () {
-      final config = NebulaConfig(
-        pki: PkiConfig(
+      final config = Nebula(
+        pki: Pki(
           ca: '/path/to/ca.crt',
           cert: '/path/to/host.crt',
           key: '/path/to/host.key',
@@ -17,31 +17,31 @@ void main() {
             'lighthouse-ip.example.com:4242',
           ],
         },
-        lighthouse: LighthouseConfig(
+        lighthouse: Lighthouse(
           amLighthouse: false,
           hosts: [
             '192.168.10.1',
           ],
         ),
-        listen: ListenConfig(
+        listen: Listen(
           host: '0.0.0.0',
           port: 0,
         ),
-        punchy: PunchyConfig(
+        punchy: Punchy(
           punch: true,
         ),
         cipher: 'aes',
-        relay: RelayConfig(
+        relay: Relay(
           amRelay: false,
           useRelays: true,
           relays: [
             '192.168.10.1',
           ],
         ),
-        tun: TunConfig(
+        tun: Tun(
           dev: 'nebula1',
         ),
-        firewall: FirewallConfig(
+        firewall: Firewall(
           outbound: [
             FirewallRule(host: 'any'),
           ],

@@ -8,34 +8,33 @@ part of 'nebula_config.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-NebulaConfig _$NebulaConfigFromJson(Map<String, dynamic> json) => NebulaConfig(
-      pki: PkiConfig.fromJson(json['pki'] as Map<String, dynamic>),
+Nebula _$NebulaFromJson(Map<String, dynamic> json) => Nebula(
+      pki: Pki.fromJson(json['pki'] as Map<String, dynamic>),
       staticHostMap: (json['static_host_map'] as Map<String, dynamic>?)?.map(
         (k, e) =>
             MapEntry(k, (e as List<dynamic>).map((e) => e as String).toList()),
       ),
       lighthouse:
-          LighthouseConfig.fromJson(json['lighthouse'] as Map<String, dynamic>),
+          Lighthouse.fromJson(json['lighthouse'] as Map<String, dynamic>),
       listen: json['listen'] == null
           ? null
-          : ListenConfig.fromJson(json['listen'] as Map<String, dynamic>),
+          : Listen.fromJson(json['listen'] as Map<String, dynamic>),
       punchy: json['punchy'] == null
           ? null
-          : PunchyConfig.fromJson(json['punchy'] as Map<String, dynamic>),
+          : Punchy.fromJson(json['punchy'] as Map<String, dynamic>),
       cipher: json['cipher'] as String?,
       relay: json['relay'] == null
           ? null
-          : RelayConfig.fromJson(json['relay'] as Map<String, dynamic>),
+          : Relay.fromJson(json['relay'] as Map<String, dynamic>),
       tun: json['tun'] == null
           ? null
-          : TunConfig.fromJson(json['tun'] as Map<String, dynamic>),
+          : Tun.fromJson(json['tun'] as Map<String, dynamic>),
       firewall: json['firewall'] == null
           ? null
-          : FirewallConfig.fromJson(json['firewall'] as Map<String, dynamic>),
+          : Firewall.fromJson(json['firewall'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$NebulaConfigToJson(NebulaConfig instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$NebulaToJson(Nebula instance) => <String, dynamic>{
       'pki': instance.pki.toJson(),
       if (instance.staticHostMap case final value?) 'static_host_map': value,
       'lighthouse': instance.lighthouse.toJson(),
@@ -47,7 +46,7 @@ Map<String, dynamic> _$NebulaConfigToJson(NebulaConfig instance) =>
       if (instance.firewall?.toJson() case final value?) 'firewall': value,
     };
 
-PkiConfig _$PkiConfigFromJson(Map<String, dynamic> json) => PkiConfig(
+Pki _$PkiFromJson(Map<String, dynamic> json) => Pki(
       ca: json['ca'] as String,
       cert: json['cert'] as String,
       key: json['key'] as String,
@@ -57,7 +56,7 @@ PkiConfig _$PkiConfigFromJson(Map<String, dynamic> json) => PkiConfig(
       disconnectInvalid: json['disconnect_invalid'] as bool?,
     );
 
-Map<String, dynamic> _$PkiConfigToJson(PkiConfig instance) => <String, dynamic>{
+Map<String, dynamic> _$PkiToJson(Pki instance) => <String, dynamic>{
       'ca': instance.ca,
       'cert': instance.cert,
       'key': instance.key,
@@ -66,63 +65,58 @@ Map<String, dynamic> _$PkiConfigToJson(PkiConfig instance) => <String, dynamic>{
         'disconnect_invalid': value,
     };
 
-LighthouseConfig _$LighthouseConfigFromJson(Map<String, dynamic> json) =>
-    LighthouseConfig(
+Lighthouse _$LighthouseFromJson(Map<String, dynamic> json) => Lighthouse(
       amLighthouse: json['am_lighthouse'] as bool?,
       hosts:
           (json['hosts'] as List<dynamic>?)?.map((e) => e as String).toList(),
     );
 
-Map<String, dynamic> _$LighthouseConfigToJson(LighthouseConfig instance) =>
+Map<String, dynamic> _$LighthouseToJson(Lighthouse instance) =>
     <String, dynamic>{
       if (instance.amLighthouse case final value?) 'am_lighthouse': value,
       if (instance.hosts case final value?) 'hosts': value,
     };
 
-ListenConfig _$ListenConfigFromJson(Map<String, dynamic> json) => ListenConfig(
+Listen _$ListenFromJson(Map<String, dynamic> json) => Listen(
       host: json['host'] as String?,
       port: (json['port'] as num?)?.toInt(),
     );
 
-Map<String, dynamic> _$ListenConfigToJson(ListenConfig instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$ListenToJson(Listen instance) => <String, dynamic>{
       if (instance.host case final value?) 'host': value,
       if (instance.port case final value?) 'port': value,
     };
 
-PunchyConfig _$PunchyConfigFromJson(Map<String, dynamic> json) => PunchyConfig(
+Punchy _$PunchyFromJson(Map<String, dynamic> json) => Punchy(
       punch: json['punch'] as bool?,
     );
 
-Map<String, dynamic> _$PunchyConfigToJson(PunchyConfig instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$PunchyToJson(Punchy instance) => <String, dynamic>{
       if (instance.punch case final value?) 'punch': value,
     };
 
-RelayConfig _$RelayConfigFromJson(Map<String, dynamic> json) => RelayConfig(
+Relay _$RelayFromJson(Map<String, dynamic> json) => Relay(
       relays:
           (json['relays'] as List<dynamic>?)?.map((e) => e as String).toList(),
       amRelay: json['am_relay'] as bool?,
       useRelays: json['use_relays'] as bool?,
     );
 
-Map<String, dynamic> _$RelayConfigToJson(RelayConfig instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$RelayToJson(Relay instance) => <String, dynamic>{
       if (instance.relays case final value?) 'relays': value,
       if (instance.amRelay case final value?) 'am_relay': value,
       if (instance.useRelays case final value?) 'use_relays': value,
     };
 
-TunConfig _$TunConfigFromJson(Map<String, dynamic> json) => TunConfig(
+Tun _$TunFromJson(Map<String, dynamic> json) => Tun(
       dev: json['dev'] as String?,
     );
 
-Map<String, dynamic> _$TunConfigToJson(TunConfig instance) => <String, dynamic>{
+Map<String, dynamic> _$TunToJson(Tun instance) => <String, dynamic>{
       if (instance.dev case final value?) 'dev': value,
     };
 
-FirewallConfig _$FirewallConfigFromJson(Map<String, dynamic> json) =>
-    FirewallConfig(
+Firewall _$FirewallFromJson(Map<String, dynamic> json) => Firewall(
       outbound: (json['outbound'] as List<dynamic>?)
           ?.map((e) => FirewallRule.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -131,8 +125,7 @@ FirewallConfig _$FirewallConfigFromJson(Map<String, dynamic> json) =>
           .toList(),
     );
 
-Map<String, dynamic> _$FirewallConfigToJson(FirewallConfig instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$FirewallToJson(Firewall instance) => <String, dynamic>{
       if (instance.outbound?.map((e) => e.toJson()).toList() case final value?)
         'outbound': value,
       if (instance.inbound?.map((e) => e.toJson()).toList() case final value?)
