@@ -65,9 +65,10 @@ class NebulaCli {
     required String name,
     required String outputPrefix,
     String? duration,
+    String? pubKeyPath,
   }) async {
     groups ??= const <String>[];
-    final pubKeyPath = '$outputPrefix.pub';
+    pubKeyPath ??= '$outputPrefix.pub';
     final pubKeyExists = File(pubKeyPath).existsSync();
     await _run([
       _certBin,

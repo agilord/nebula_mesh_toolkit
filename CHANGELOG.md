@@ -1,7 +1,9 @@
 ## 0.3.0
 
 - New output directory structure: separating `hosts/` and `ca/`
-- `ca/keys` store multiple CA keys for rolling updates in the `<ts>-<fingerprint>.crt` format
+- Support for key rotation:
+  - `ca/keys` store multiple CA keys for rolling updates in the `<ts>-<fingerprint>.crt` format
+  - `hosts/<host>/certs` store multiple certificate signature for rolling updates in the above format
 - `nebula-cert` `ca` and `sign` also outputs `.crt.json` with the certificate info
 - `nebula-cert` `keygen` is used to generate public key, `sign` uses it if exists
 - Support expiry `duration`.

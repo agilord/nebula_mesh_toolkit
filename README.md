@@ -77,12 +77,17 @@ The artifact generation creates the following output structure:
 |  |  |- bin
 |  |  |  |- nebula
 |  |  |  |- nebula-cert
+|  |  |- certs
+|  |  |  |- <ca-key>.crt
+|  |  |  |- <ca-key>.crt.json
+|  |  |  |- <ca-key>.png
+|  |  |  |- 20241213202756-2a3ebc600e3211203a158e1ddbb9b4d2b4f53d7b70280d8a433a1ebf4f2aa9a8.crt
+|  |  |  |- 20241213202756-2a3ebc600e3211203a158e1ddbb9b4d2b4f53d7b70280d8a433a1ebf4f2aa9a8.crt.json
+|  |  |  |- 20241213202756-2a3ebc600e3211203a158e1ddbb9b4d2b4f53d7b70280d8a433a1ebf4f2aa9a8.png
 |  |  |- etc
 |  |    |- nebula-1.ca.crt
 |  |    |- nebula-1-lighthouse-1.crt
-|  |    |- nebula-1-lighthouse-1.crt.json
 |  |    |- nebula-1-lighthouse-1.key
-|  |    |- nebula-1-lighthouse-1.png
 |  |    |- nebula-1-lighthouse-1.pub
 |  |    |- nebula-1-lighthouse-1.yml
 |  |- server-1
@@ -93,10 +98,16 @@ The artifact generation creates the following output structure:
 |     |- ...
 ```
 
+## Key rotation
+
+- The tool generates multiple CA keys in the `ca/keys/` directory.
+- The valid key certificates are copied into the `ca/<nebula>-<id>.ca.crt` file (copied to each host too).
+- The host public key is signed with each valid CA certificate and stored in the `/hosts/<host>/certs/` directory.
+- The valid host certificates are copied into the `ca/<nebula>-<id>-<host-name>.crt` file.
+
 ## Limitations
 
 **Planned improvements**:
-- There is no incremental update or key rotation (yet).
 - The script is tested only on Linux (yet).
 - Firewall presets are not part of the network (yet).
 

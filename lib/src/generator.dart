@@ -25,33 +25,33 @@ extension NetworkGeneratorExt on Network {
       final cli = NebulaCli(path: tempBin.path);
 
       await Directory(outputPath).create(recursive: true);
-      final existingCaCerts =
-          await loadCertificatesFromDirectory(p.join(outputPath, 'ca', 'keys'));
 
       // next ca key
       final netName = 'nebula-$id';
       final tempCAPrefix = p.join(temp.path, 'ca', netName);
       await File('$tempCAPrefix.crt').parent.create(recursive: true);
-      final caCert = await cli.ca(
+      final newCaCert = await cli.ca(
         name: name ?? netName,
         outputPrefix: tempCAPrefix,
         duration: translateDuration(duration),
       );
-      final caFingerprint = caCert.fingerprint;
+      final caFingerprint = newCaCert.fingerprint;
       if (caFingerprint == null || caFingerprint.isEmpty) {
         throw AssertionError('No CA fingerprint detected.');
       }
-      final caPrefix = p.join(outputPath, 'ca', 'keys', caCert.canonicalId);
-      await File('$caPrefix.crt').parent.create(recursive: true);
-      await File('$tempCAPrefix.crt').copy('$caPrefix.crt');
-      await File('$tempCAPrefix.crt.json').copy('$caPrefix.crt.json');
-      await File('$tempCAPrefix.key').copy('$caPrefix.key');
+      final canonicalCaPrefix =
+          p.join(outputPath, 'ca', 'keys', newCaCert.canonicalId);
+      await File('$canonicalCaPrefix.crt').parent.create(recursive: true);
+      await File('$tempCAPrefix.crt').copy('$canonicalCaPrefix.crt');
+      await File('$tempCAPrefix.crt.json').copy('$canonicalCaPrefix.crt.json');
+      await File('$tempCAPrefix.key').copy('$canonicalCaPrefix.key');
 
-      final now = DateTime.now();
-      final validCaCerts = [
-        ...existingCaCerts,
-        caCert,
-      ].where((c) => !now.isAfter(c.details!.notAfter!)).toList()
+      final currentCerts =
+          await loadCertificatesFromDirectory(p.join(outputPath, 'ca', 'keys'));
+      final validCaCerts = currentCerts
+          .map((cf) => cf.certificate)
+          .where((c) => c.isValid())
+          .toList()
         ..sort((a, b) => a.canonicalId.compareTo(b.canonicalId));
       final allCaCertContent = StringBuffer();
       for (final cert in validCaCerts) {
@@ -94,15 +94,40 @@ extension NetworkGeneratorExt on Network {
         final prefixNamePart = '$netName-${entry.host.name}';
         final keyPrefix = p.join(etc, prefixNamePart);
         await cli.keygen(outputPrefix: keyPrefix);
-        await cli.sign(
-          caPrefix: caPrefix,
-          ip: entry.host.address,
-          name: entry.host.name,
-          outputPrefix: keyPrefix,
-          groups: entry.template.groups,
-          duration:
-              translateDuration(entry.host.duration ?? entry.template.duration),
-        );
+
+        final hostCertsDir = Directory(p.join(dir.path, 'certs'));
+        await hostCertsDir.create(recursive: true);
+        for (final caCert in validCaCerts) {
+          final hostCertPrefix = p.join(hostCertsDir.path, caCert.canonicalId);
+          await File(hostCertPrefix).parent.create(recursive: true);
+
+          final caPrefix = p.join(outputPath, 'ca', 'keys', caCert.canonicalId);
+          await cli.sign(
+            caPrefix: caPrefix,
+            ip: entry.host.address,
+            name: entry.host.name,
+            pubKeyPath: '$keyPrefix.pub',
+            outputPrefix: hostCertPrefix,
+            groups: entry.template.groups,
+            duration: translateDuration(
+                entry.host.duration ?? entry.template.duration),
+          );
+        }
+
+        final hostCertFiles =
+            await loadCertificatesFromDirectory(hostCertsDir.path);
+        final allHostCertsContent = StringBuffer();
+        for (final cf in hostCertFiles) {
+          if (!cf.certificate.isValid()) continue;
+          final content = await File(cf.path).readAsString();
+          allHostCertsContent.writeln(content);
+        }
+        if (allHostCertsContent.isEmpty) {
+          throw AssertionError(
+              'Host cert content is empty for ${entry.host.name}.');
+        }
+        await File(p.join(etc, '$keyPrefix.crt'))
+            .writeAsString(allHostCertsContent.toString());
 
         final staticHostMap = {
           if (!entry.isLighthouse) ...lighthousesStaticHostMap,
@@ -193,7 +218,7 @@ Firewall? _mergeFirewall(Firewall? defined, List<String>? presetNames) {
   );
 }
 
-Future<List<Certificate>> loadCertificatesFromDirectory(String path) async {
+Future<List<_CertFile>> loadCertificatesFromDirectory(String path) async {
   final dir = Directory(path);
   if (!await dir.exists()) {
     return [];
@@ -203,9 +228,17 @@ Future<List<Certificate>> loadCertificatesFromDirectory(String path) async {
       .whereType<File>()
       .where((f) => f.path.endsWith('.crt.json'))
       .toList();
-  return files
-      .map((f) => f.readAsStringSync())
-      .map(json.decode)
-      .map((j) => Certificate.fromJson(j as Map<String, dynamic>))
-      .toList();
+  return files.map((f) {
+    final content = f.readAsStringSync();
+    final map = json.decode(content) as Map<String, dynamic>;
+    final cert = Certificate.fromJson(map);
+    return _CertFile(f.path, cert);
+  }).toList();
+}
+
+class _CertFile {
+  final String path;
+  final Certificate certificate;
+
+  _CertFile(this.path, this.certificate);
 }

@@ -50,33 +50,42 @@ void main() {
             .toSet()
             .toList()
           ..sort();
+
+        Iterable<String> hostCerts(String host) =>
+            caCertificates.map((cf) => cf.certificate).expand(
+                  (c) => [
+                    'hosts/$host/certs/${c.canonicalId}.crt',
+                    'hosts/$host/certs/${c.canonicalId}.crt.json',
+                    'hosts/$host/certs/${c.canonicalId}.png',
+                  ],
+                );
+
         // uncomment to debug-print the files below
         // print(files.map((e) => '\'$e\',\n').join());
         expect(files, {
-          ...caCertificates.expand(
-            (c) => [
-              'ca/keys/${c.canonicalId}.crt',
-              'ca/keys/${c.canonicalId}.crt.json',
-              'ca/keys/${c.canonicalId}.key',
-            ],
-          ),
+          ...caCertificates.map((cf) => cf.certificate).expand(
+                (c) => [
+                  'ca/keys/${c.canonicalId}.crt',
+                  'ca/keys/${c.canonicalId}.crt.json',
+                  'ca/keys/${c.canonicalId}.key',
+                ],
+              ),
           'ca/nebula-1.ca.crt',
           'hosts/lighthouse-1/bin/nebula',
           'hosts/lighthouse-1/bin/nebula-cert',
+          ...hostCerts('lighthouse-1'),
           'hosts/lighthouse-1/etc/nebula-1.ca.crt',
           'hosts/lighthouse-1/etc/nebula-1-lighthouse-1.crt',
-          'hosts/lighthouse-1/etc/nebula-1-lighthouse-1.crt.json',
           'hosts/lighthouse-1/etc/nebula-1-lighthouse-1.key',
-          'hosts/lighthouse-1/etc/nebula-1-lighthouse-1.png',
           'hosts/lighthouse-1/etc/nebula-1-lighthouse-1.pub',
           'hosts/lighthouse-1/etc/nebula-1-lighthouse-1.yml',
+          ...hostCerts('mobile-1'),
           'hosts/mobile-1/etc/nebula-1.ca.crt',
           'hosts/mobile-1/etc/nebula-1-mobile-1.crt',
-          'hosts/mobile-1/etc/nebula-1-mobile-1.crt.json',
           'hosts/mobile-1/etc/nebula-1-mobile-1.key',
-          'hosts/mobile-1/etc/nebula-1-mobile-1.png',
           'hosts/mobile-1/etc/nebula-1-mobile-1.pub',
           'hosts/mobile-1/etc/nebula-1-mobile-1.yml',
+          ...hostCerts('notebook-1'),
           'hosts/notebook-1/bin/dist/windows/wintun/LICENSE.txt',
           'hosts/notebook-1/bin/dist/windows/wintun/README.md',
           'hosts/notebook-1/bin/dist/windows/wintun/bin/amd64/wintun.dll',
@@ -88,18 +97,15 @@ void main() {
           'hosts/notebook-1/bin/nebula.exe',
           'hosts/notebook-1/etc/nebula-1.ca.crt',
           'hosts/notebook-1/etc/nebula-1-notebook-1.crt',
-          'hosts/notebook-1/etc/nebula-1-notebook-1.crt.json',
           'hosts/notebook-1/etc/nebula-1-notebook-1.key',
-          'hosts/notebook-1/etc/nebula-1-notebook-1.png',
           'hosts/notebook-1/etc/nebula-1-notebook-1.pub',
           'hosts/notebook-1/etc/nebula-1-notebook-1.yml',
+          ...hostCerts('server-1'),
           'hosts/server-1/bin/nebula',
           'hosts/server-1/bin/nebula-cert',
           'hosts/server-1/etc/nebula-1.ca.crt',
           'hosts/server-1/etc/nebula-1-server-1.crt',
-          'hosts/server-1/etc/nebula-1-server-1.crt.json',
           'hosts/server-1/etc/nebula-1-server-1.key',
-          'hosts/server-1/etc/nebula-1-server-1.png',
           'hosts/server-1/etc/nebula-1-server-1.pub',
           'hosts/server-1/etc/nebula-1-server-1.yml',
         });

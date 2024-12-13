@@ -385,6 +385,15 @@ class Certificate {
         .first;
     return '$ts-${fingerprint!}';
   }();
+
+  bool isValid() {
+    if (details?.notAfter == null) return false;
+    if (details?.notBefore == null) return false;
+    final now = DateTime.now();
+    if (now.isAfter(details!.notAfter!)) return false;
+    if (now.isBefore(details!.notBefore!)) return false;
+    return true;
+  }
 }
 
 @JsonSerializable()
