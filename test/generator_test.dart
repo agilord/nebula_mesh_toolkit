@@ -50,46 +50,46 @@ void main() {
         // uncomment to debug-print the files below
         // print(files.map((e) => '\'$e\',\n').join());
         expect(files, {
-          'lighthouse-1/bin/nebula',
-          'lighthouse-1/bin/nebula-cert',
-          'lighthouse-1/etc/nebula-1-ca.crt',
-          'lighthouse-1/etc/nebula-1-lighthouse-1.crt',
-          'lighthouse-1/etc/nebula-1-lighthouse-1.key',
-          'lighthouse-1/etc/nebula-1-lighthouse-1.png',
-          'lighthouse-1/etc/nebula-1-lighthouse-1.yml',
-          'mobile-1/etc/nebula-1-ca.crt',
-          'mobile-1/etc/nebula-1-mobile-1.crt',
-          'mobile-1/etc/nebula-1-mobile-1.key',
-          'mobile-1/etc/nebula-1-mobile-1.png',
-          'mobile-1/etc/nebula-1-mobile-1.yml',
-          'nebula-1-ca.crt',
-          'nebula-1-ca.key',
-          'notebook-1/bin/dist/windows/wintun/LICENSE.txt',
-          'notebook-1/bin/dist/windows/wintun/README.md',
-          'notebook-1/bin/dist/windows/wintun/bin/amd64/wintun.dll',
-          'notebook-1/bin/dist/windows/wintun/bin/arm/wintun.dll',
-          'notebook-1/bin/dist/windows/wintun/bin/arm64/wintun.dll',
-          'notebook-1/bin/dist/windows/wintun/bin/x86/wintun.dll',
-          'notebook-1/bin/dist/windows/wintun/include/wintun.h',
-          'notebook-1/bin/nebula-cert.exe',
-          'notebook-1/bin/nebula.exe',
-          'notebook-1/etc/nebula-1-ca.crt',
-          'notebook-1/etc/nebula-1-notebook-1.crt',
-          'notebook-1/etc/nebula-1-notebook-1.key',
-          'notebook-1/etc/nebula-1-notebook-1.png',
-          'notebook-1/etc/nebula-1-notebook-1.yml',
-          'server-1/bin/nebula',
-          'server-1/bin/nebula-cert',
-          'server-1/etc/nebula-1-ca.crt',
-          'server-1/etc/nebula-1-server-1.crt',
-          'server-1/etc/nebula-1-server-1.key',
-          'server-1/etc/nebula-1-server-1.png',
-          'server-1/etc/nebula-1-server-1.yml',
+          'ca/nebula-1-ca.crt',
+          'ca/nebula-1-ca.key',
+          'hosts/lighthouse-1/bin/nebula',
+          'hosts/lighthouse-1/bin/nebula-cert',
+          'hosts/lighthouse-1/etc/nebula-1-ca.crt',
+          'hosts/lighthouse-1/etc/nebula-1-lighthouse-1.crt',
+          'hosts/lighthouse-1/etc/nebula-1-lighthouse-1.key',
+          'hosts/lighthouse-1/etc/nebula-1-lighthouse-1.png',
+          'hosts/lighthouse-1/etc/nebula-1-lighthouse-1.yml',
+          'hosts/mobile-1/etc/nebula-1-ca.crt',
+          'hosts/mobile-1/etc/nebula-1-mobile-1.crt',
+          'hosts/mobile-1/etc/nebula-1-mobile-1.key',
+          'hosts/mobile-1/etc/nebula-1-mobile-1.png',
+          'hosts/mobile-1/etc/nebula-1-mobile-1.yml',
+          'hosts/notebook-1/bin/dist/windows/wintun/LICENSE.txt',
+          'hosts/notebook-1/bin/dist/windows/wintun/README.md',
+          'hosts/notebook-1/bin/dist/windows/wintun/bin/amd64/wintun.dll',
+          'hosts/notebook-1/bin/dist/windows/wintun/bin/arm/wintun.dll',
+          'hosts/notebook-1/bin/dist/windows/wintun/bin/arm64/wintun.dll',
+          'hosts/notebook-1/bin/dist/windows/wintun/bin/x86/wintun.dll',
+          'hosts/notebook-1/bin/dist/windows/wintun/include/wintun.h',
+          'hosts/notebook-1/bin/nebula-cert.exe',
+          'hosts/notebook-1/bin/nebula.exe',
+          'hosts/notebook-1/etc/nebula-1-ca.crt',
+          'hosts/notebook-1/etc/nebula-1-notebook-1.crt',
+          'hosts/notebook-1/etc/nebula-1-notebook-1.key',
+          'hosts/notebook-1/etc/nebula-1-notebook-1.png',
+          'hosts/notebook-1/etc/nebula-1-notebook-1.yml',
+          'hosts/server-1/bin/nebula',
+          'hosts/server-1/bin/nebula-cert',
+          'hosts/server-1/etc/nebula-1-ca.crt',
+          'hosts/server-1/etc/nebula-1-server-1.crt',
+          'hosts/server-1/etc/nebula-1-server-1.key',
+          'hosts/server-1/etc/nebula-1-server-1.png',
+          'hosts/server-1/etc/nebula-1-server-1.yml',
         });
 
         expect(
-          _loadYamlAsMap(
-              p.join(temp.path, 'lighthouse-1/etc/nebula-1-lighthouse-1.yml')),
+          _loadYamlAsMap(p.join(
+              temp.path, 'hosts/lighthouse-1/etc/nebula-1-lighthouse-1.yml')),
           {
             'pki': {
               'ca': 'nebula-1-ca.crt',
@@ -114,7 +114,7 @@ void main() {
 
         expect(
           _loadYamlAsMap(
-              p.join(temp.path, 'server-1/etc/nebula-1-server-1.yml')),
+              p.join(temp.path, 'hosts/server-1/etc/nebula-1-server-1.yml')),
           {
             'pki': {
               'ca': 'nebula-1-ca.crt',
@@ -148,8 +148,8 @@ void main() {
         );
 
         expect(
-          _loadYamlAsMap(
-              p.join(temp.path, 'notebook-1/etc/nebula-1-notebook-1.yml')),
+          _loadYamlAsMap(p.join(
+              temp.path, 'hosts/notebook-1/etc/nebula-1-notebook-1.yml')),
           {
             'pki': {
               'ca': 'nebula-1-ca.crt',

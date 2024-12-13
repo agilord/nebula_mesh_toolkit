@@ -23,7 +23,8 @@ extension NetworkGeneratorExt on Network {
 
       await Directory(outputPath).create(recursive: true);
       final caName = 'nebula-$id-ca';
-      final caPrefix = p.join(outputPath, caName);
+      final caPrefix = p.join(outputPath, 'ca', caName);
+      await File('$caPrefix.crt').parent.create(recursive: true);
       await cli.ca(
         name: name ?? 'nebula-$id',
         outputPrefix: caPrefix,
@@ -40,7 +41,7 @@ extension NetworkGeneratorExt on Network {
               e.host.publicAddresses!.isNotEmpty)
           .map((e) => MapEntry(e.host.address, e.host.publicAddresses ?? [])));
       for (final entry in entries) {
-        final dir = Directory(p.join(outputPath, entry.host.name));
+        final dir = Directory(p.join(outputPath, 'hosts', entry.host.name));
         await dir.create(recursive: true);
         final bin = p.join(dir.path, 'bin');
         await Directory(bin).create(recursive: true);

@@ -1,5 +1,6 @@
-## 0.2.1
+## 0.3.0
 
+- New output directory structure: separating `hosts/` and `ca/`
 - Updated lints.
 - Support expiry `duration`.
 

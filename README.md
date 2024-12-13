@@ -63,24 +63,26 @@ templates:
 The artifact generation creates the following output structure:
 
 ```
-|- nebula-1-ca.crt
-|- nebula-1-ca.key
-|- lighthouse-1
-|  |- bin
-|  |  |- nebula
-|  |  |- nebula-cert
-|  |- etc
-|    |- nebula-1-ca.crt
-|    |- nebula-1-lighthouse-1.crt
-|    |- nebula-1-lighthouse-1.key
-|    |- nebula-1-lighthouse-1.png
-|    |- nebula-1-lighthouse-1.yml
-|- server-1
-|  |- ...
-|- notebook-1
-|  |- ...
-|- mobile-1
-   |- ...
+|- ca
+|  |- nebula-1-ca.crt
+|  |- nebula-1-ca.key
+|- hosts
+|  |- lighthouse-1
+|  |  |- bin
+|  |  |  |- nebula
+|  |  |  |- nebula-cert
+|  |  |- etc
+|  |    |- nebula-1-ca.crt
+|  |    |- nebula-1-lighthouse-1.crt
+|  |    |- nebula-1-lighthouse-1.key
+|  |    |- nebula-1-lighthouse-1.png
+|  |    |- nebula-1-lighthouse-1.yml
+|  |- server-1
+|  |  |- ...
+|  |- notebook-1
+|  |  |- ...
+|  |- mobile-1
+|     |- ...
 ```
 
 ## Limitations
