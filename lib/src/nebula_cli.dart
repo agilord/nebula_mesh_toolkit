@@ -1,6 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:path/path.dart' as p;
+
+import 'nebula_config.dart';
 
 class NebulaCli {
   final String? path;
@@ -25,7 +28,7 @@ class NebulaCli {
     return pr;
   }
 
-  Future<void> ca({
+  Future<Certificate> ca({
     required String name,
     required String outputPrefix,
     String? duration,
@@ -41,9 +44,10 @@ class NebulaCli {
       '-out-key',
       '$outputPrefix.key',
     ]);
+    return await _printAndSaveCert('$outputPrefix.crt');
   }
 
-  Future<void> sign({
+  Future<Certificate> sign({
     required String caPrefix,
     List<String>? groups,
     required String ip,
@@ -72,5 +76,20 @@ class NebulaCli {
       '-out-qr',
       '$outputPrefix.png',
     ]);
+    return await _printAndSaveCert('$outputPrefix.crt');
+  }
+
+  Future<Certificate> _printAndSaveCert(String certPath) async {
+    final pr = await _run([
+      _certBin,
+      'print',
+      '-json',
+      '-path',
+      certPath,
+    ]);
+    final map = json.decode(pr.stdout.toString()) as Map<String, dynamic>;
+    await File('$certPath.json')
+        .writeAsString(JsonEncoder.withIndent('  ').convert(map));
+    return Certificate.fromJson(map);
   }
 }

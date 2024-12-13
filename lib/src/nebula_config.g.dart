@@ -147,3 +147,55 @@ Map<String, dynamic> _$FirewallRuleToJson(FirewallRule instance) =>
       if (instance.host case final value?) 'host': value,
       if (instance.groups case final value?) 'groups': value,
     };
+
+Certificate _$CertificateFromJson(Map<String, dynamic> json) => Certificate(
+      details: json['details'] == null
+          ? null
+          : CertificateDetails.fromJson(
+              json['details'] as Map<String, dynamic>),
+      fingerprint: json['fingerprint'] as String?,
+      signature: json['signature'] as String?,
+    );
+
+Map<String, dynamic> _$CertificateToJson(Certificate instance) =>
+    <String, dynamic>{
+      if (instance.details?.toJson() case final value?) 'details': value,
+      if (instance.fingerprint case final value?) 'fingerprint': value,
+      if (instance.signature case final value?) 'signature': value,
+    };
+
+CertificateDetails _$CertificateDetailsFromJson(Map<String, dynamic> json) =>
+    CertificateDetails(
+      curve: json['curve'] as String?,
+      groups:
+          (json['groups'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      ips: (json['ips'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      isCa: json['isCa'] as bool?,
+      issuer: json['issuer'] as String?,
+      name: json['name'] as String?,
+      notAfter: json['notAfter'] == null
+          ? null
+          : DateTime.parse(json['notAfter'] as String),
+      notBefore: json['notBefore'] == null
+          ? null
+          : DateTime.parse(json['notBefore'] as String),
+      publicKey: json['publicKey'] as String?,
+      subnets:
+          (json['subnets'] as List<dynamic>?)?.map((e) => e as String).toList(),
+    );
+
+Map<String, dynamic> _$CertificateDetailsToJson(CertificateDetails instance) =>
+    <String, dynamic>{
+      if (instance.curve case final value?) 'curve': value,
+      if (instance.groups case final value?) 'groups': value,
+      if (instance.ips case final value?) 'ips': value,
+      if (instance.isCa case final value?) 'isCa': value,
+      if (instance.issuer case final value?) 'issuer': value,
+      if (instance.name case final value?) 'name': value,
+      if (instance.notAfter?.toIso8601String() case final value?)
+        'notAfter': value,
+      if (instance.notBefore?.toIso8601String() case final value?)
+        'notBefore': value,
+      if (instance.subnets case final value?) 'subnets': value,
+      if (instance.publicKey case final value?) 'publicKey': value,
+    };

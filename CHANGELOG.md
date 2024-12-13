@@ -1,8 +1,9 @@
 ## 0.3.0
 
 - New output directory structure: separating `hosts/` and `ca/`
-- Updated lints.
+- `nebula-cert` `ca` and `sign` also outputs `.crt.json` with the certificate info
 - Support expiry `duration`.
+- Updated lints.
 
 ## 0.2.0
 

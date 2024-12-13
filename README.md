@@ -65,6 +65,7 @@ The artifact generation creates the following output structure:
 ```
 |- ca
 |  |- nebula-1-ca.crt
+|  |- nebula-1-ca.crt.json
 |  |- nebula-1-ca.key
 |- hosts
 |  |- lighthouse-1
@@ -74,6 +75,7 @@ The artifact generation creates the following output structure:
 |  |  |- etc
 |  |    |- nebula-1-ca.crt
 |  |    |- nebula-1-lighthouse-1.crt
+|  |    |- nebula-1-lighthouse-1.crt.json
 |  |    |- nebula-1-lighthouse-1.key
 |  |    |- nebula-1-lighthouse-1.png
 |  |    |- nebula-1-lighthouse-1.yml

@@ -40,10 +40,12 @@ void main() {
             .toSet();
         expect(paths, {
           'test-ca.crt',
+          'test-ca.crt.json',
           'test-ca.key',
           'machine.crt',
-          'machine.png',
+          'machine.crt.json',
           'machine.key',
+          'machine.png',
         });
       } finally {
         await temp.delete(recursive: true);

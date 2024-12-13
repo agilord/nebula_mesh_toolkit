@@ -357,3 +357,52 @@ class FirewallRule {
     return (other is FirewallRule) && _asJsonString == other._asJsonString;
   }
 }
+
+@JsonSerializable()
+class Certificate {
+  final CertificateDetails? details;
+  final String? fingerprint;
+  final String? signature;
+
+  Certificate({
+    this.details,
+    this.fingerprint,
+    this.signature,
+  });
+
+  factory Certificate.fromJson(Map<String, dynamic> map) =>
+      _$CertificateFromJson(map);
+
+  Map<String, dynamic> toJson() => _$CertificateToJson(this);
+}
+
+@JsonSerializable()
+class CertificateDetails {
+  final String? curve;
+  final List<String>? groups;
+  final List<String>? ips;
+  final bool? isCa;
+  final String? issuer;
+  final String? name;
+  final DateTime? notAfter;
+  final DateTime? notBefore;
+  final List<String>? subnets;
+  final String? publicKey;
+
+  CertificateDetails({
+    this.curve,
+    this.groups,
+    this.ips,
+    this.isCa,
+    this.issuer,
+    this.name,
+    this.notAfter,
+    this.notBefore,
+    this.publicKey,
+    this.subnets,
+  });
+  factory CertificateDetails.fromJson(Map<String, dynamic> map) =>
+      _$CertificateDetailsFromJson(map);
+
+  Map<String, dynamic> toJson() => _$CertificateDetailsToJson(this);
+}
