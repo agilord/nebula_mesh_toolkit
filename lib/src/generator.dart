@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:path/path.dart' as p;
@@ -17,19 +18,53 @@ extension NetworkGeneratorExt on Network {
   }) async {
     final temp = await Directory.systemTemp.createTemp();
     try {
+      final tempBin = Directory(p.join(temp.path, 'bin'));
+      await tempBin.create(recursive: true);
       assets ??= GitHubNebulaAssets();
-      await assets.extractReleaseTo(os: 'linux', targetPath: temp.path);
-      final cli = NebulaCli(path: temp.path);
+      await assets.extractReleaseTo(os: 'linux', targetPath: tempBin.path);
+      final cli = NebulaCli(path: tempBin.path);
 
       await Directory(outputPath).create(recursive: true);
-      final caName = 'nebula-$id-ca';
-      final caPrefix = p.join(outputPath, 'ca', caName);
-      await File('$caPrefix.crt').parent.create(recursive: true);
-      await cli.ca(
-        name: name ?? 'nebula-$id',
-        outputPrefix: caPrefix,
+      final existingCaCerts =
+          await loadCertificatesFromDirectory(p.join(outputPath, 'ca', 'keys'));
+
+      // next ca key
+      final netName = 'nebula-$id';
+      final tempCAPrefix = p.join(temp.path, 'ca', netName);
+      await File('$tempCAPrefix.crt').parent.create(recursive: true);
+      final caCert = await cli.ca(
+        name: name ?? netName,
+        outputPrefix: tempCAPrefix,
         duration: translateDuration(duration),
       );
+      final caFingerprint = caCert.fingerprint;
+      if (caFingerprint == null || caFingerprint.isEmpty) {
+        throw AssertionError('No CA fingerprint detected.');
+      }
+      final caPrefix = p.join(outputPath, 'ca', 'keys', caCert.canonicalId);
+      await File('$caPrefix.crt').parent.create(recursive: true);
+      await File('$tempCAPrefix.crt').copy('$caPrefix.crt');
+      await File('$tempCAPrefix.crt.json').copy('$caPrefix.crt.json');
+      await File('$tempCAPrefix.key').copy('$caPrefix.key');
+
+      final now = DateTime.now();
+      final validCaCerts = [
+        ...existingCaCerts,
+        caCert,
+      ].where((c) => !now.isAfter(c.details!.notAfter!)).toList()
+        ..sort((a, b) => a.canonicalId.compareTo(b.canonicalId));
+      final allCaCertContent = StringBuffer();
+      for (final cert in validCaCerts) {
+        final content = await File(
+                p.join(outputPath, 'ca', 'keys', '${cert.canonicalId}.crt'))
+            .readAsString();
+        allCaCertContent.writeln(content);
+      }
+      if (allCaCertContent.isEmpty) {
+        throw AssertionError('No valid CA cert available.');
+      }
+      final allCaCrtFile = File(p.join(outputPath, 'ca', '$netName.ca.crt'));
+      await allCaCrtFile.writeAsString(allCaCertContent.toString());
 
       final entries = templates
           .expand((t) => t.hosts.map((h) => _HostTemplate(h, t)))
@@ -54,7 +89,7 @@ extension NetworkGeneratorExt on Network {
 
         final etc = p.join(dir.path, 'etc');
         await Directory(etc).create(recursive: true);
-        await File('$caPrefix.crt').copy(p.join(etc, '$caName.crt'));
+        await allCaCrtFile.copy(p.join(etc, '$netName.ca.crt'));
 
         final prefix = 'nebula-$id-${entry.host.name}';
         final fullCertPrefix = p.join(etc, prefix);
@@ -87,7 +122,7 @@ extension NetworkGeneratorExt on Network {
 
         final config = Nebula(
           pki: Pki(
-            ca: '$caName.crt',
+            ca: '$netName.ca.crt',
             cert: '$prefix.crt',
             key: '$prefix.key',
           ),
@@ -155,4 +190,21 @@ Firewall? _mergeFirewall(Firewall? defined, List<String>? presetNames) {
     inbound: inbound.toList(),
     outbound: outbound.toList(),
   );
+}
+
+Future<List<Certificate>> loadCertificatesFromDirectory(String path) async {
+  final dir = Directory(path);
+  if (!await dir.exists()) {
+    return [];
+  }
+  final files = dir
+      .listSync()
+      .whereType<File>()
+      .where((f) => f.path.endsWith('.crt.json'))
+      .toList();
+  return files
+      .map((f) => f.readAsStringSync())
+      .map(json.decode)
+      .map((j) => Certificate.fromJson(j as Map<String, dynamic>))
+      .toList();
 }

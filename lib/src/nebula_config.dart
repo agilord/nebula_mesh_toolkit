@@ -374,6 +374,17 @@ class Certificate {
       _$CertificateFromJson(map);
 
   Map<String, dynamic> toJson() => _$CertificateToJson(this);
+
+  late final canonicalId = () {
+    final ts = details!.notBefore!
+        .toIso8601String()
+        .replaceAll('-', '')
+        .replaceAll('T', '')
+        .replaceAll(':', '')
+        .split('.')
+        .first;
+    return '$ts-${fingerprint!}';
+  }();
 }
 
 @JsonSerializable()

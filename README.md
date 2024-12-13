@@ -64,16 +64,21 @@ The artifact generation creates the following output structure:
 
 ```
 |- ca
-|  |- nebula-1-ca.crt
-|  |- nebula-1-ca.crt.json
-|  |- nebula-1-ca.key
+|  |- keys
+|  |  |- <not-before-timestamp>-<fingerprint>.crt
+|  |  |- <not-before-timestamp>-<fingerprint>.crt.json
+|  |  |- <not-before-timestamp>-<fingerprint>.crt.key
+|  |  |- 20241213202756-2a3ebc600e3211203a158e1ddbb9b4d2b4f53d7b70280d8a433a1ebf4f2aa9a8.crt
+|  |  |- 20241213202756-2a3ebc600e3211203a158e1ddbb9b4d2b4f53d7b70280d8a433a1ebf4f2aa9a8.crt.json
+|  |  |- 20241213202756-2a3ebc600e3211203a158e1ddbb9b4d2b4f53d7b70280d8a433a1ebf4f2aa9a8.crt.key
+|  |- nebula-1.ca.crt
 |- hosts
 |  |- lighthouse-1
 |  |  |- bin
 |  |  |  |- nebula
 |  |  |  |- nebula-cert
 |  |  |- etc
-|  |    |- nebula-1-ca.crt
+|  |    |- nebula-1.ca.crt
 |  |    |- nebula-1-lighthouse-1.crt
 |  |    |- nebula-1-lighthouse-1.crt.json
 |  |    |- nebula-1-lighthouse-1.key

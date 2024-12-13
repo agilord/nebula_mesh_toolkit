@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:nebula_mesh_toolkit/src/generator.dart';
 import 'package:nebula_mesh_toolkit/src/network_template.dart';
 import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
@@ -37,7 +38,9 @@ void main() {
             '.dart_tool/cached-github',
           ],
         );
-        expect(pr.exitCode, 0);
+        expect(pr.exitCode, 0, reason: pr.stderr.toString());
+        final caCertificates = await loadCertificatesFromDirectory(
+            p.join(temp.path, 'ca', 'keys'));
 
         // expected files
         final files = temp
@@ -50,18 +53,23 @@ void main() {
         // uncomment to debug-print the files below
         // print(files.map((e) => '\'$e\',\n').join());
         expect(files, {
-          'ca/nebula-1-ca.crt',
-          'ca/nebula-1-ca.crt.json',
-          'ca/nebula-1-ca.key',
+          ...caCertificates.expand(
+            (c) => [
+              'ca/keys/${c.canonicalId}.crt',
+              'ca/keys/${c.canonicalId}.crt.json',
+              'ca/keys/${c.canonicalId}.key',
+            ],
+          ),
+          'ca/nebula-1.ca.crt',
           'hosts/lighthouse-1/bin/nebula',
           'hosts/lighthouse-1/bin/nebula-cert',
-          'hosts/lighthouse-1/etc/nebula-1-ca.crt',
+          'hosts/lighthouse-1/etc/nebula-1.ca.crt',
           'hosts/lighthouse-1/etc/nebula-1-lighthouse-1.crt',
           'hosts/lighthouse-1/etc/nebula-1-lighthouse-1.crt.json',
           'hosts/lighthouse-1/etc/nebula-1-lighthouse-1.key',
           'hosts/lighthouse-1/etc/nebula-1-lighthouse-1.png',
           'hosts/lighthouse-1/etc/nebula-1-lighthouse-1.yml',
-          'hosts/mobile-1/etc/nebula-1-ca.crt',
+          'hosts/mobile-1/etc/nebula-1.ca.crt',
           'hosts/mobile-1/etc/nebula-1-mobile-1.crt',
           'hosts/mobile-1/etc/nebula-1-mobile-1.crt.json',
           'hosts/mobile-1/etc/nebula-1-mobile-1.key',
@@ -76,7 +84,7 @@ void main() {
           'hosts/notebook-1/bin/dist/windows/wintun/include/wintun.h',
           'hosts/notebook-1/bin/nebula-cert.exe',
           'hosts/notebook-1/bin/nebula.exe',
-          'hosts/notebook-1/etc/nebula-1-ca.crt',
+          'hosts/notebook-1/etc/nebula-1.ca.crt',
           'hosts/notebook-1/etc/nebula-1-notebook-1.crt',
           'hosts/notebook-1/etc/nebula-1-notebook-1.crt.json',
           'hosts/notebook-1/etc/nebula-1-notebook-1.key',
@@ -84,7 +92,7 @@ void main() {
           'hosts/notebook-1/etc/nebula-1-notebook-1.yml',
           'hosts/server-1/bin/nebula',
           'hosts/server-1/bin/nebula-cert',
-          'hosts/server-1/etc/nebula-1-ca.crt',
+          'hosts/server-1/etc/nebula-1.ca.crt',
           'hosts/server-1/etc/nebula-1-server-1.crt',
           'hosts/server-1/etc/nebula-1-server-1.crt.json',
           'hosts/server-1/etc/nebula-1-server-1.key',
@@ -97,7 +105,7 @@ void main() {
               temp.path, 'hosts/lighthouse-1/etc/nebula-1-lighthouse-1.yml')),
           {
             'pki': {
-              'ca': 'nebula-1-ca.crt',
+              'ca': 'nebula-1.ca.crt',
               'cert': 'nebula-1-lighthouse-1.crt',
               'key': 'nebula-1-lighthouse-1.key',
             },
@@ -122,7 +130,7 @@ void main() {
               p.join(temp.path, 'hosts/server-1/etc/nebula-1-server-1.yml')),
           {
             'pki': {
-              'ca': 'nebula-1-ca.crt',
+              'ca': 'nebula-1.ca.crt',
               'cert': 'nebula-1-server-1.crt',
               'key': 'nebula-1-server-1.key',
             },
@@ -157,7 +165,7 @@ void main() {
               temp.path, 'hosts/notebook-1/etc/nebula-1-notebook-1.yml')),
           {
             'pki': {
-              'ca': 'nebula-1-ca.crt',
+              'ca': 'nebula-1.ca.crt',
               'cert': 'nebula-1-notebook-1.crt',
               'key': 'nebula-1-notebook-1.key'
             },
