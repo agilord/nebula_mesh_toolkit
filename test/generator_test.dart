@@ -18,12 +18,6 @@ void main() {
     test('generate assets', () async {
       final temp = await Directory.systemTemp.createTemp();
       try {
-        // generate artifacts programmatically:
-        // final map = _loadYamlAsMap('test/small_local_network.yaml');
-        // final network = Network.fromJson(map);
-        // final gh = GitHubNebulaAssets(cacheDir: '.dart_tool/cached-github');
-        // await network.generateArtifacts(outputPath: temp.path, assets: gh);
-
         // generate artifacts by running the binary:
         final pr = await Process.run(
           'dart',
@@ -47,7 +41,6 @@ void main() {
             .listSync(recursive: true)
             .whereType<File>()
             .map((f) => p.relative(f.path, from: temp.path))
-            .toSet()
             .toList()
           ..sort();
 

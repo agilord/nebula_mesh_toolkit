@@ -58,7 +58,7 @@ extension NetworkGeneratorExt on Network {
         final content = await File(
                 p.join(outputPath, 'ca', 'keys', '${cert.canonicalId}.crt'))
             .readAsString();
-        allCaCertContent.writeln(content);
+        allCaCertContent.writeln(content.trim());
       }
       if (allCaCertContent.isEmpty) {
         throw AssertionError('No valid CA cert available.');
@@ -99,7 +99,9 @@ extension NetworkGeneratorExt on Network {
         await hostCertsDir.create(recursive: true);
         for (final caCert in validCaCerts) {
           final hostCertPrefix = p.join(hostCertsDir.path, caCert.canonicalId);
-          await File(hostCertPrefix).parent.create(recursive: true);
+          final hostCertFile = File('$hostCertPrefix.crt');
+          if (await hostCertFile.exists()) continue;
+          await hostCertFile.parent.create(recursive: true);
 
           final caPrefix = p.join(outputPath, 'ca', 'keys', caCert.canonicalId);
           await cli.sign(
@@ -119,8 +121,10 @@ extension NetworkGeneratorExt on Network {
         final allHostCertsContent = StringBuffer();
         for (final cf in hostCertFiles) {
           if (!cf.certificate.isValid()) continue;
-          final content = await File(cf.path).readAsString();
-          allHostCertsContent.writeln(content);
+          // file is `.crt.json`, we want to load `.crt`
+          final content = await File(cf.path.substring(0, cf.path.length - 5))
+              .readAsString();
+          allHostCertsContent.writeln(content.trim());
         }
         if (allHostCertsContent.isEmpty) {
           throw AssertionError(
