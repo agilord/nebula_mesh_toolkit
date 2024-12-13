@@ -91,13 +91,14 @@ extension NetworkGeneratorExt on Network {
         await Directory(etc).create(recursive: true);
         await allCaCrtFile.copy(p.join(etc, '$netName.ca.crt'));
 
-        final prefix = 'nebula-$id-${entry.host.name}';
-        final fullCertPrefix = p.join(etc, prefix);
+        final prefixNamePart = '$netName-${entry.host.name}';
+        final keyPrefix = p.join(etc, prefixNamePart);
+        await cli.keygen(outputPrefix: keyPrefix);
         await cli.sign(
           caPrefix: caPrefix,
           ip: entry.host.address,
           name: entry.host.name,
-          outputPrefix: fullCertPrefix,
+          outputPrefix: keyPrefix,
           groups: entry.template.groups,
           duration:
               translateDuration(entry.host.duration ?? entry.template.duration),
@@ -123,8 +124,8 @@ extension NetworkGeneratorExt on Network {
         final config = Nebula(
           pki: Pki(
             ca: '$netName.ca.crt',
-            cert: '$prefix.crt',
-            key: '$prefix.key',
+            cert: '$prefixNamePart.crt',
+            key: '$prefixNamePart.key',
           ),
           cipher: cipher,
           staticHostMap: staticHostMap.isEmpty ? null : staticHostMap,
@@ -150,7 +151,7 @@ extension NetworkGeneratorExt on Network {
                 ],
               ),
         );
-        await File(p.join(etc, '$prefix.yml'))
+        await File(p.join(etc, '$prefixNamePart.yml'))
             .writeAsString('${config.toYamlString()}\n');
       }
     } finally {

@@ -3,6 +3,7 @@
 - New output directory structure: separating `hosts/` and `ca/`
 - `ca/keys` store multiple CA keys for rolling updates in the `<ts>-<fingerprint>.crt` format
 - `nebula-cert` `ca` and `sign` also outputs `.crt.json` with the certificate info
+- `nebula-cert` `keygen` is used to generate public key, `sign` uses it if exists
 - Support expiry `duration`.
 - Updated lints.
 

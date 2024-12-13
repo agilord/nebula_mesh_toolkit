@@ -83,6 +83,7 @@ The artifact generation creates the following output structure:
 |  |    |- nebula-1-lighthouse-1.crt.json
 |  |    |- nebula-1-lighthouse-1.key
 |  |    |- nebula-1-lighthouse-1.png
+|  |    |- nebula-1-lighthouse-1.pub
 |  |    |- nebula-1-lighthouse-1.yml
 |  |- server-1
 |  |  |- ...

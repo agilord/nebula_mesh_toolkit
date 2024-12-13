@@ -47,6 +47,17 @@ class NebulaCli {
     return await _printAndSaveCert('$outputPrefix.crt');
   }
 
+  Future<void> keygen({required String outputPrefix}) async {
+    await _run([
+      _certBin,
+      'keygen',
+      '-out-key',
+      '$outputPrefix.key',
+      '-out-pub',
+      '$outputPrefix.pub',
+    ]);
+  }
+
   Future<Certificate> sign({
     required String caPrefix,
     List<String>? groups,
@@ -56,6 +67,8 @@ class NebulaCli {
     String? duration,
   }) async {
     groups ??= const <String>[];
+    final pubKeyPath = '$outputPrefix.pub';
+    final pubKeyExists = File(pubKeyPath).existsSync();
     await _run([
       _certBin,
       'sign',
@@ -64,6 +77,10 @@ class NebulaCli {
       '$caPrefix.crt',
       '-ca-key',
       '$caPrefix.key',
+      if (pubKeyExists) ...[
+        '-in-pub',
+        pubKeyPath,
+      ],
       if (groups.isNotEmpty) ...['-groups', groups.join(',')],
       '-ip',
       ip,
@@ -71,8 +88,10 @@ class NebulaCli {
       name,
       '-out-crt',
       '$outputPrefix.crt',
-      '-out-key',
-      '$outputPrefix.key',
+      if (!pubKeyExists) ...[
+        '-out-key',
+        '$outputPrefix.key',
+      ],
       '-out-qr',
       '$outputPrefix.png',
     ]);
