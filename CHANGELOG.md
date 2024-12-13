@@ -1,3 +1,7 @@
+## 0.2.1
+
+- Updated lints.
+
 ## 0.2.0
 
 - Better class names for nebula `yaml` configurtion.

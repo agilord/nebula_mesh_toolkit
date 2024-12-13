@@ -40,6 +40,7 @@ class _GenerateArtifacts extends Command {
       );
   }
 
+  @override
   Future<void> run() async {
     final input = argResults!['input'] as String;
     final output = argResults!['output'] as String;

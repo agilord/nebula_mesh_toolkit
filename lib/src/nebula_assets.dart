@@ -18,7 +18,7 @@ abstract class NebulaAssets {
 }
 
 class GitHubNebulaAssets implements NebulaAssets {
-  String? _cacheDir;
+  final String? _cacheDir;
   String? _latestVersion;
   final _binaries = <String, Uint8List>{};
 
@@ -30,7 +30,7 @@ class GitHubNebulaAssets implements NebulaAssets {
     if (_cacheDir == null) {
       return;
     }
-    final dir = Directory(_cacheDir!);
+    final dir = Directory(_cacheDir);
     if (!dir.existsSync()) {
       return;
     }
@@ -58,7 +58,7 @@ class GitHubNebulaAssets implements NebulaAssets {
       return null;
     }
     await _clearAllCachedFilesOlderThanMonth();
-    final file = File(p.join(_cacheDir!, _cachedUriToName(uri)));
+    final file = File(p.join(_cacheDir, _cachedUriToName(uri)));
     if (file.existsSync()) {
       final age = DateTime.now().difference(file.lastModifiedSync());
       if (age < ttl) {
@@ -70,9 +70,9 @@ class GitHubNebulaAssets implements NebulaAssets {
 
   Future<void> _storeCachedBytes(Uri uri, Uint8List bytes) async {
     if (_cacheDir == null) {
-      return null;
+      return;
     }
-    final file = File(p.join(_cacheDir!, _cachedUriToName(uri)));
+    final file = File(p.join(_cacheDir, _cachedUriToName(uri)));
     await file.parent.create(recursive: true);
     await file.writeAsBytes(bytes);
   }
@@ -96,7 +96,7 @@ class GitHubNebulaAssets implements NebulaAssets {
     if (fm == null) {
       throw Exception('Unable to extract latest release version.');
     }
-    _latestVersion = fm.group(1)!;
+    _latestVersion = fm.group(1);
     await _storeCachedBytes(uri, utf8.encode(_latestVersion!));
     return _latestVersion!;
   }

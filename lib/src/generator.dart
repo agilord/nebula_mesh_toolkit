@@ -1,13 +1,12 @@
 import 'dart:io';
 
-import 'package:nebula_mesh_toolkit/src/nebula_config.dart';
-import 'package:nebula_mesh_toolkit/src/os_utils.dart';
 import 'package:path/path.dart' as p;
 
-import 'package:nebula_mesh_toolkit/src/nebula_assets.dart';
-import 'package:nebula_mesh_toolkit/src/nebula_cli.dart';
-
+import 'nebula_assets.dart';
+import 'nebula_cli.dart';
+import 'nebula_config.dart';
 import 'network_template.dart';
+import 'os_utils.dart';
 
 extension NetworkGeneratorExt on Network {
   /// Generates artifacts with reasonable defaults.
@@ -19,7 +18,7 @@ extension NetworkGeneratorExt on Network {
     try {
       assets ??= GitHubNebulaAssets();
       await assets.extractReleaseTo(os: 'linux', targetPath: temp.path);
-      final cli = await NebulaCli(path: temp.path);
+      final cli = NebulaCli(path: temp.path);
 
       await Directory(outputPath).create(recursive: true);
       final caName = 'nebula-$id-ca';

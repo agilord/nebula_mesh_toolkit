@@ -98,5 +98,6 @@ Please open a new issue to discuss missing or expected features.
 
 ## See also
 
-- [Nebula mesh networking](https://github.com/slackhq/nebula/)
+- [Nebula mesh networking](https://github.com/slackhq/nebula/) and
+  [quick start guide](https://nebula.defined.net/docs/guides/quick-start/)
 - [nebuilder](https://github.com/erykjj/nebulder) - a Python script with similar goals

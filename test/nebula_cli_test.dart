@@ -33,7 +33,7 @@ void main() {
           outputPrefix: p.join(temp.path, 'machine'),
         );
 
-        final files = await temp.listSync().whereType<File>();
+        final files = temp.listSync().whereType<File>();
         final paths = files
             .map((e) => e.path)
             .map((e) => p.relative(e, from: temp.path))
