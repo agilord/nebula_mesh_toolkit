@@ -25,6 +25,7 @@ describes a simple network with some roles:
 ```yaml
 id: 1 # the tun device id + network identifier
 cipher: aes
+duration: 182d
 
 templates:
   - groups: ['lighthouse']

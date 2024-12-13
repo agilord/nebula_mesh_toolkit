@@ -13,6 +13,7 @@ Network _$NetworkFromJson(Map<String, dynamic> json) => Network(
       id: (json['id'] as num).toInt(),
       cipher: json['cipher'] as String?,
       os: json['os'] as String?,
+      duration: json['duration'] as String?,
       templates: (json['templates'] as List<dynamic>)
           .map((e) => Template.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -23,6 +24,7 @@ Map<String, dynamic> _$NetworkToJson(Network instance) => <String, dynamic>{
       'id': instance.id,
       if (instance.cipher case final value?) 'cipher': value,
       if (instance.os case final value?) 'os': value,
+      if (instance.duration case final value?) 'duration': value,
       'templates': instance.templates.map((e) => e.toJson()).toList(),
     };
 
@@ -49,6 +51,7 @@ Template _$TemplateFromJson(Map<String, dynamic> json) => Template(
       firewall: json['firewall'] == null
           ? null
           : Firewall.fromJson(json['firewall'] as Map<String, dynamic>),
+      duration: json['duration'] as String?,
       hosts: (json['hosts'] as List<dynamic>)
           .map((e) => Host.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -63,6 +66,7 @@ Map<String, dynamic> _$TemplateToJson(Template instance) => <String, dynamic>{
       if (instance.relay?.toJson() case final value?) 'relay': value,
       if (instance.firewallPresets case final value?) 'firewall_presets': value,
       if (instance.firewall?.toJson() case final value?) 'firewall': value,
+      if (instance.duration case final value?) 'duration': value,
       'hosts': instance.hosts.map((e) => e.toJson()).toList(),
     };
 
@@ -73,6 +77,7 @@ Host _$HostFromJson(Map<String, dynamic> json) => Host(
       listen: json['listen'] == null
           ? null
           : Listen.fromJson(json['listen'] as Map<String, dynamic>),
+      duration: json['duration'] as String?,
       publicAddresses: (json['publicAddresses'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
@@ -83,5 +88,6 @@ Map<String, dynamic> _$HostToJson(Host instance) => <String, dynamic>{
       'address': instance.address,
       if (instance.os case final value?) 'os': value,
       if (instance.listen?.toJson() case final value?) 'listen': value,
+      if (instance.duration case final value?) 'duration': value,
       if (instance.publicAddresses case final value?) 'publicAddresses': value,
     };

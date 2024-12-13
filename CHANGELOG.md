@@ -1,6 +1,7 @@
 ## 0.2.1
 
 - Updated lints.
+- Support expiry `duration`.
 
 ## 0.2.0
 

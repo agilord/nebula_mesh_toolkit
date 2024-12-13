@@ -7,6 +7,7 @@ import 'nebula_cli.dart';
 import 'nebula_config.dart';
 import 'network_template.dart';
 import 'os_utils.dart';
+import 'utils.dart';
 
 extension NetworkGeneratorExt on Network {
   /// Generates artifacts with reasonable defaults.
@@ -23,7 +24,11 @@ extension NetworkGeneratorExt on Network {
       await Directory(outputPath).create(recursive: true);
       final caName = 'nebula-$id-ca';
       final caPrefix = p.join(outputPath, caName);
-      await cli.ca(name: name ?? 'nebula-$id', outputPrefix: caPrefix);
+      await cli.ca(
+        name: name ?? 'nebula-$id',
+        outputPrefix: caPrefix,
+        duration: translateDuration(duration),
+      );
 
       final entries = templates
           .expand((t) => t.hosts.map((h) => _HostTemplate(h, t)))
@@ -58,6 +63,8 @@ extension NetworkGeneratorExt on Network {
           name: entry.host.name,
           outputPrefix: fullCertPrefix,
           groups: entry.template.groups,
+          duration:
+              translateDuration(entry.host.duration ?? entry.template.duration),
         );
 
         final staticHostMap = {

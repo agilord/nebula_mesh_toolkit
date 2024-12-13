@@ -19,6 +19,8 @@ class Network {
 
   final String? os;
 
+  final String? duration;
+
   final List<Template> templates;
 
   Network({
@@ -26,6 +28,7 @@ class Network {
     required this.id,
     this.cipher,
     this.os,
+    this.duration,
     required this.templates,
   });
 
@@ -59,6 +62,8 @@ class Template {
 
   final Firewall? firewall;
 
+  final String? duration;
+
   final List<Host> hosts;
 
   Template({
@@ -70,6 +75,7 @@ class Template {
     this.relay,
     this.firewallPresets,
     this.firewall,
+    this.duration,
     required this.hosts,
   });
 
@@ -85,6 +91,7 @@ class Host {
   final String address;
   final String? os;
   final Listen? listen;
+  final String? duration;
   final List<String>? publicAddresses;
 
   Host({
@@ -92,6 +99,7 @@ class Host {
     required this.address,
     this.os,
     this.listen,
+    this.duration,
     this.publicAddresses,
   });
 

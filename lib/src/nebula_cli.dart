@@ -28,10 +28,12 @@ class NebulaCli {
   Future<void> ca({
     required String name,
     required String outputPrefix,
+    String? duration,
   }) async {
     await _run([
       _certBin,
       'ca',
+      if (duration != null) ...['-duration', duration],
       '-name',
       name,
       '-out-crt',
@@ -47,11 +49,13 @@ class NebulaCli {
     required String ip,
     required String name,
     required String outputPrefix,
+    String? duration,
   }) async {
     groups ??= const <String>[];
     await _run([
       _certBin,
       'sign',
+      if (duration != null) ...['-duration', duration],
       '-ca-crt',
       '$caPrefix.crt',
       '-ca-key',

@@ -1,5 +1,6 @@
 id: 1 # the tun device id + network identifier
 cipher: aes
+duration: 2y
 
 templates:
   - groups: ['lighthouse']
