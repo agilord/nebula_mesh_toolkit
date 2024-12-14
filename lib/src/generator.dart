@@ -91,13 +91,17 @@ extension NetworkGeneratorExt on Network {
         await Directory(etc).create(recursive: true);
         await allCaCrtFile.copy(p.join(etc, '$netName.ca.crt'));
 
+        final hostCertsDir = Directory(p.join(dir.path, 'certs'));
         final prefixNamePart = '$netName-${entry.host.name}';
         final keyPrefix = p.join(etc, prefixNamePart);
-        if (!File('$keyPrefix.pub').existsSync()) {
+        final resetKeys = !File('$keyPrefix.pub').existsSync();
+        if (resetKeys) {
           await cli.keygen(outputPrefix: keyPrefix);
+          if (await hostCertsDir.exists()) {
+            await hostCertsDir.delete(recursive: true);
+          }
         }
 
-        final hostCertsDir = Directory(p.join(dir.path, 'certs'));
         await hostCertsDir.create(recursive: true);
         for (final caCert in validCaCerts) {
           final hostCertPrefix = p.join(hostCertsDir.path, caCert.canonicalId);

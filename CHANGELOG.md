@@ -1,6 +1,7 @@
 ## 0.3.1
 
 - Do not override existing private and public key when they exists.
+- Cleanup of host certificates when public key does not exists.
 
 ## 0.3.0
 
