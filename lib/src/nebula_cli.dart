@@ -8,6 +8,11 @@ import 'nebula_config.dart';
 class NebulaCli {
   final String? path;
 
+  late final _nebulaBin = p.joinAll([
+    if (path != null) path!,
+    'nebula',
+  ]);
+
   late final _certBin = p.joinAll([
     if (path != null) path!,
     'nebula-cert',
@@ -17,15 +22,29 @@ class NebulaCli {
     this.path,
   });
 
-  Future<ProcessResult> _run(List<String> args) async {
+  Future<ProcessResult> _run(
+    List<String> args, {
+    String? workingDirectory,
+  }) async {
     final pr = await Process.run(
       args.first,
       args.skip(1).toList(),
+      workingDirectory: workingDirectory,
     );
     if (pr.exitCode != 0) {
       throw Exception('Unable to run $args\n${pr.stdout}\n${pr.stderr}\n');
     }
     return pr;
+  }
+
+  Future<void> testConfig({
+    required String configPath,
+    String? workingDirectory,
+  }) async {
+    await _run(
+      [_nebulaBin, '-test', '-config', configPath],
+      workingDirectory: workingDirectory,
+    );
   }
 
   Future<Certificate> ca({

@@ -93,7 +93,9 @@ extension NetworkGeneratorExt on Network {
 
         final prefixNamePart = '$netName-${entry.host.name}';
         final keyPrefix = p.join(etc, prefixNamePart);
-        await cli.keygen(outputPrefix: keyPrefix);
+        if (!File('$keyPrefix.pub').existsSync()) {
+          await cli.keygen(outputPrefix: keyPrefix);
+        }
 
         final hostCertsDir = Directory(p.join(dir.path, 'certs'));
         await hostCertsDir.create(recursive: true);

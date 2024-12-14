@@ -1,3 +1,7 @@
+## 0.3.1
+
+- Do not override existing private and public key when they exists.
+
 ## 0.3.0
 
 - New output directory structure: separating `hosts/` and `ca/`
