@@ -59,7 +59,7 @@ void main() {
         final hostCertContent = await File(
                 p.join(temp.path, 'hosts', 'lh', 'etc', 'nebula-12-lh.crt'))
             .readAsString();
-        expect(hostCertContent.split('NEBULA CERTIFICATE').length, 5);
+        expect(hostCertContent.split('NEBULA CERTIFICATE').length, 3);
 
         await cli.testConfig(
           configPath: p.join(temp.path, 'hosts/lh/etc/nebula-12-lh.yml'),

@@ -1,3 +1,7 @@
+## 0.3.2
+
+- Fix: use only the latest certificate for hosts (still keeping all the valid ones just in case they are useful).
+
 ## 0.3.1
 
 - Do not override existing private and public key when they exists.

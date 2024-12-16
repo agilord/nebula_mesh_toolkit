@@ -185,20 +185,14 @@ class _HostGenerator {
 
     final hostCertFiles =
         await loadCertificatesFromDirectory(hostCertsDir.path);
-    final allHostCertsContent = StringBuffer();
-    for (final cf in hostCertFiles) {
-      if (!cf.certificate.isValid()) continue;
-      // file is `.crt.json`, we want to load `.crt`
-      final content =
-          await File(cf.path.substring(0, cf.path.length - 5)).readAsString();
-      allHostCertsContent.writeln(content.trim());
-    }
-    if (allHostCertsContent.isEmpty) {
-      throw AssertionError(
-          'Host cert content is empty for ${entry.host.name}.');
-    }
+    final cf = hostCertFiles.reduce((a, b) => a.certificate.details!.notAfter!
+            .isAfter(b.certificate.details!.notAfter!)
+        ? a
+        : b);
+    final certContent =
+        await File(cf.path.substring(0, cf.path.length - 5)).readAsString();
     await File(p.join(_etcDir.path, '$keyPrefix.crt'))
-        .writeAsString(allHostCertsContent.toString());
+        .writeAsString(certContent);
   }
 
   Future<void> _updateConfig() async {
