@@ -21,6 +21,8 @@ class Network {
 
   final String? duration;
 
+  final String? renew;
+
   final List<Template> templates;
 
   Network({
@@ -29,6 +31,7 @@ class Network {
     this.cipher,
     this.os,
     this.duration,
+    this.renew,
     required this.templates,
   });
 

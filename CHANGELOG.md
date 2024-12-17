@@ -1,6 +1,7 @@
 ## 0.3.2
 
 - Fix: use only the latest certificate for hosts (still keeping all the valid ones just in case they are useful).
+- Support minimum period before rotating the CA (`renew`) with the same duration format as `duration`.
 
 ## 0.3.1
 

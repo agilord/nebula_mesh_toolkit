@@ -1,4 +1,4 @@
-String? translateDuration(String? input) {
+Duration? parseDuration(String? input) {
   if (input == null) {
     return null;
   }
@@ -21,8 +21,27 @@ String? translateDuration(String? input) {
     input = h[1];
   }
 
+  var seconds = 0;
+  final m = input.split('m');
+  if (m.length == 2) {
+    seconds += int.parse(m[0]) * 60;
+    input = m[1];
+  }
+  final s = input.split('s');
+  if (s.first.isNotEmpty) {
+    seconds += int.parse(s.first);
+  }
+
+  return Duration(hours: hours, seconds: seconds);
+}
+
+String? translateDuration(String? input) {
+  final d = parseDuration(input);
+  if (d == null) {
+    return null;
+  }
+  final seconds = d.inSeconds;
   return [
-    if (hours > 0) '${hours}h',
-    input,
+    if (seconds > 0) '${seconds}s',
   ].join();
 }

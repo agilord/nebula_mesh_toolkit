@@ -23,33 +23,33 @@ void main() {
 
     test('two keys on a single machine', () async {
       final temp = await Directory.systemTemp.createTemp();
+
+      List<String> listFiles() => temp
+          .listSync(recursive: true)
+          .whereType<File>()
+          .map((f) => p.relative(f.path, from: temp.path))
+          .toList();
+
       try {
         final cli = NebulaCli(path: cliTemp.path);
 
-        // generate artifacts programmatically
         final network = Network(id: 12, templates: [
           Template(
             hosts: [Host(name: 'lh', address: '192.168.11.1/24')],
           ),
         ]);
+        // generate artifacts programmatically
         final gh = GitHubNebulaAssets(cacheDir: '.dart_tool/cached-github');
         await network.generateArtifacts(outputPath: temp.path, assets: gh);
         await cli.testConfig(
           configPath: p.join(temp.path, 'hosts/lh/etc/nebula-12-lh.yml'),
           workingDirectory: p.join(temp.path, 'hosts/lh/etc'),
         );
+        expect(listFiles(), hasLength(14));
 
         // second run
         await network.generateArtifacts(outputPath: temp.path, assets: gh);
-
-        // expected files
-        final files = temp
-            .listSync(recursive: true)
-            .whereType<File>()
-            .map((f) => p.relative(f.path, from: temp.path))
-            .toList();
-
-        expect(files, hasLength(20));
+        expect(listFiles(), hasLength(20));
 
         final caCertContent =
             await File(p.join(temp.path, 'ca', 'nebula-12.ca.crt'))
@@ -65,6 +65,11 @@ void main() {
           configPath: p.join(temp.path, 'hosts/lh/etc/nebula-12-lh.yml'),
           workingDirectory: p.join(temp.path, 'hosts/lh/etc'),
         );
+
+        // renew keeps current ca
+        final n2 = Network.fromJson(network.toJson()..['renew'] = '1h');
+        await n2.generateArtifacts(outputPath: temp.path, assets: gh);
+        expect(listFiles(), hasLength(20));
       } finally {
         await temp.delete(recursive: true);
       }
