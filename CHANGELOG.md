@@ -11,6 +11,7 @@
 
 **New features**:
 - `Network.addresses` will be passed to the CA certificate to limit IP ranges.
+- Generate `etc/<domain>.hosts` with the list of `ip` -> fully qualified hostnames.
 
 ## 0.3.2
 

@@ -64,6 +64,7 @@ void main() {
                 ],
               ),
           'ca/neb.internal.ca.crt',
+          'etc/neb.internal.hosts',
           'hosts/lighthouse-1/bin/nebula',
           'hosts/lighthouse-1/bin/nebula-cert',
           ...hostCerts('lighthouse-1'),
@@ -190,6 +191,17 @@ void main() {
               ],
             },
           },
+        );
+
+        expect(
+          File(p.join(temp.path, 'etc', 'neb.internal.hosts'))
+              .readAsLinesSync(),
+          [
+            '192.168.100.1  lighthouse-1.neb.internal',
+            '192.168.100.10 server-1.neb.internal',
+            '192.168.100.20 notebook-1.neb.internal',
+            '192.168.100.21 mobile-1.neb.internal',
+          ],
         );
       } finally {
         await temp.delete(recursive: true);

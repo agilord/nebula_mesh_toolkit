@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:path/path.dart' as p;
 
@@ -48,11 +49,16 @@ class _NetworkGenerator {
   late final File _allCaCrtFile;
   late final List<Certificate> _validCaCerts;
 
+  late final _hostsFile =
+      File(p.join(outputPath, 'etc', '${network.domain}.hosts'));
+  final _hostsMap = <String, String>{};
+
   Future<void> generateArtifacts({
     NebulaAssets? assets,
   }) async {
     _tempRoot = await Directory.systemTemp.createTemp();
     try {
+      await _readAndWriteHostsFile();
       await _initAssetsAndCli(assets);
       await Directory(outputPath).create(recursive: true);
       await _generateNewCaKey();
@@ -64,6 +70,33 @@ class _NetworkGenerator {
     } finally {
       await _tempRoot.delete(recursive: true);
     }
+  }
+
+  Future<void> _readAndWriteHostsFile() async {
+    final whitespaces = RegExp(r'\s+');
+    if (await _hostsFile.exists()) {
+      final lines = await _hostsFile.readAsLines();
+      for (final line in lines) {
+        if (line.isEmpty) continue;
+        final parts =
+            line.split(whitespaces).where((s) => s.isNotEmpty).toList();
+        if (parts.length == 1) continue;
+        _hostsMap[parts[1].split('.').first] = parts[0];
+      }
+    }
+
+    for (final entry in _entries) {
+      _hostsMap[entry.host.name] = entry.host.address.split('/').first;
+    }
+
+    await _hostsFile.parent.create(recursive: true);
+    final entries = _hostsMap.entries.toList()
+      ..sort((a, b) => a.value.compareTo(b.value));
+    final padding = entries.map((e) => e.value.length).reduce(max);
+    final content = entries.map((e) {
+      return '${e.value.padRight(padding, ' ')} ${e.key}.${network.domain}\n';
+    }).join('');
+    await _hostsFile.writeAsString(content);
   }
 
   Future<void> _initAssetsAndCli(NebulaAssets? assets) async {
