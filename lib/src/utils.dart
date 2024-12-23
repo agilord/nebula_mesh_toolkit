@@ -46,29 +46,45 @@ String? translateDuration(String? input) {
   ].join();
 }
 
+void _setLastBits(List<int> bytes, int prefixBits, bool set) {
+  var byteIndex = bytes.length - 1;
+  var bitIndex = 0;
+  final counter = (bytes.length * 8) - prefixBits;
+  for (var i = 0; i < counter; i++) {
+    if (set) {
+      final bitMask = 1 << bitIndex;
+      bytes[byteIndex] = bytes[byteIndex] | bitMask;
+    } else {
+      final bitMask = 0xff - (1 << bitIndex);
+      bytes[byteIndex] = bytes[byteIndex] & bitMask;
+    }
+    // next
+    bitIndex++;
+    if (bitIndex == 8) {
+      bitIndex = 0;
+      byteIndex--;
+    }
+  }
+}
+
 class CidrGenerator {
   final String _base;
   late final _prefix = _base.split('/').first;
   late final _prefixBytes = _prefix.split('.').map(int.parse).toList();
-  late final _prefixBitsValue = _base.split('/').last;
-  late final _prefixBits = int.parse(_prefixBitsValue);
+  late final prefixBitsValue = _base.split('/').last;
+  late final _prefixBits = int.parse(prefixBitsValue);
 
-  int _beginCounter = 0;
+  late int _availableValues = 1 << ((_prefixBytes.length * 8) - _prefixBits);
+
   late final _beginBytes = () {
     final bytes = [..._prefixBytes];
-    var zeroByteIndex = bytes.length - 1;
-    var zeroBitIndex = 0;
-    final zeroCounter = (bytes.length * 8) - _prefixBits;
-    for (var i = 0; i < zeroCounter; i++) {
-      final bitMask = 0xff - (1 << zeroBitIndex);
-      bytes[zeroByteIndex] = bytes[zeroByteIndex] & bitMask;
-      // next
-      zeroBitIndex++;
-      if (zeroBitIndex == 8) {
-        zeroBitIndex = 0;
-        zeroByteIndex--;
-      }
-    }
+    _setLastBits(bytes, _prefixBits, false);
+    return bytes;
+  }();
+
+  late final _endBytes = () {
+    final bytes = [..._prefixBytes];
+    _setLastBits(bytes, _prefixBits, true);
     return bytes;
   }();
 
@@ -76,10 +92,13 @@ class CidrGenerator {
 
   void _incBegin() {
     final bytes = _beginBytes;
-    _beginCounter++;
+    _availableValues--;
+    if (_availableValues <= 0) {
+      throw AssertionError('No more available space.');
+    }
     for (var i = bytes.length - 1; i >= 0; i--) {
       if (bytes[i] == 255) {
-        bytes[i] = i == bytes.length ? 1 : 0;
+        bytes[i] = 0;
         continue;
       }
       bytes[i] = bytes[i] + 1;
@@ -87,11 +106,32 @@ class CidrGenerator {
     }
   }
 
-  String next() {
+  void _decEnd() {
+    final bytes = _endBytes;
+    _availableValues--;
+    if (_availableValues <= 0) {
+      throw AssertionError('No more available space.');
+    }
+    for (var i = bytes.length - 1; i >= 0; i--) {
+      if (bytes[i] == 0) {
+        bytes[i] = 255;
+        continue;
+      }
+      bytes[i] = bytes[i] - 1;
+      break;
+    }
+  }
+
+  String nextFromBeginning() {
     _incBegin();
     return '${_beginBytes.join('.')}/$_prefixBits';
   }
 
+  String nextFromEnd() {
+    _decEnd();
+    return '${_endBytes.join('.')}/$_prefixBits';
+  }
+
   @override
-  String toString() => 'CidrGenerator(counter = $_beginCounter)';
+  String toString() => 'CidrGenerator(available = $_availableValues)';
 }

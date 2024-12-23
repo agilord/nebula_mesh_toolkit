@@ -13,8 +13,8 @@
 - `Network.addresses` will be passed to the CA certificate to limit IP ranges.
 - Generate `etc/<domain>.hosts` with the list of `ip` -> fully qualified hostnames.
   The file is also copied to `hosts/<host>/etc/<domain>.hosts`.
-- `Host.address` is no longer required, the first `Network.address` will be used to generate an unused one.
-  Note: the actual sequence algorithm is pending to change. 
+- `Host.address` is no longer required, the `Network.addresses` will be used to generate an unused one.
+  Note: the actual sequence algorithm is not stable, it is subject to change.
 
 ## 0.3.2
 

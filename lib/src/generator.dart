@@ -119,8 +119,16 @@ class _NetworkGenerator {
             'Need to specify network-level `addresses` to automatically generate host `address`.');
       }
       generator ??= CidrGenerator(network.addresses!.first);
+
+      final existingIp = hostToIp[entry.host.name];
+      if (existingIp != null) {
+        entry.host.address = '$existingIp/${generator!.prefixBitsValue}';
+      }
+
       for (;;) {
-        final next = generator.next();
+        final next = entry.isLighthouse
+            ? generator.nextFromBeginning()
+            : generator.nextFromEnd();
         final ip = next.split('/').first;
         if (ipToHost.containsKey(ip)) continue;
         entry.host.address = next;
@@ -132,11 +140,13 @@ class _NetworkGenerator {
 
     await _hostsFile.parent.create(recursive: true);
     final entries = _entries
-        .map((e) => MapEntry(e.host.name, e.host.address!.split('/').first))
-        .toList();
-    final padding = entries.map((e) => e.value.length).reduce(max);
+        .map((e) =>
+            _HostsFileEntry(e.host.address!.split('/').first, e.host.name))
+        .toList()
+      ..sort();
+    final padding = entries.map((e) => e.ip.length).reduce(max);
     final content = entries.map((e) {
-      return '${e.value.padRight(padding, ' ')} ${e.key}.${network.domain}\n';
+      return '${e.ip.padRight(padding, ' ')} ${e.host}.${network.domain}\n';
     }).join('');
     await _hostsFile.writeAsString(content);
   }
@@ -415,4 +425,28 @@ class CertificateJsonFile {
   final Certificate certificate;
 
   CertificateJsonFile(this.path, this.certificate);
+}
+
+class _HostsFileEntry implements Comparable<_HostsFileEntry> {
+  final String host;
+  final String ip;
+
+  _HostsFileEntry(this.ip, this.host);
+
+  late final ipParts = ip.split('.').map(int.parse).toList();
+
+  @override
+  int compareTo(_HostsFileEntry other) {
+    if (ipParts.length != other.ipParts.length) {
+      return ipParts.length.compareTo(other.ipParts.length);
+    }
+    for (var i = 0; i < other.ipParts.length; i++) {
+      final a1 = ipParts[i];
+      final a2 = other.ipParts[i];
+      if (a1 != a2) {
+        return a1.compareTo(a2);
+      }
+    }
+    return 0;
+  }
 }
