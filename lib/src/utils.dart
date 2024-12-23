@@ -45,3 +45,53 @@ String? translateDuration(String? input) {
     if (seconds > 0) '${seconds}s',
   ].join();
 }
+
+class CidrGenerator {
+  final String _base;
+  late final _prefix = _base.split('/').first;
+  late final _prefixBytes = _prefix.split('.').map(int.parse).toList();
+  late final _prefixBitsValue = _base.split('/').last;
+  late final _prefixBits = int.parse(_prefixBitsValue);
+
+  int _beginCounter = 0;
+  late final _beginBytes = () {
+    final bytes = [..._prefixBytes];
+    var zeroByteIndex = bytes.length - 1;
+    var zeroBitIndex = 0;
+    final zeroCounter = (bytes.length * 8) - _prefixBits;
+    for (var i = 0; i < zeroCounter; i++) {
+      final bitMask = 0xff - (1 << zeroBitIndex);
+      bytes[zeroByteIndex] = bytes[zeroByteIndex] & bitMask;
+      // next
+      zeroBitIndex++;
+      if (zeroBitIndex == 8) {
+        zeroBitIndex = 0;
+        zeroByteIndex--;
+      }
+    }
+    return bytes;
+  }();
+
+  CidrGenerator(this._base);
+
+  void _incBegin() {
+    final bytes = _beginBytes;
+    _beginCounter++;
+    for (var i = bytes.length - 1; i >= 0; i--) {
+      if (bytes[i] == 255) {
+        bytes[i] = i == bytes.length ? 1 : 0;
+        continue;
+      }
+      bytes[i] = bytes[i] + 1;
+      break;
+    }
+  }
+
+  String next() {
+    _incBegin();
+    return '${_beginBytes.join('.')}/$_prefixBits';
+  }
+
+  @override
+  String toString() => 'CidrGenerator(counter = $_beginCounter)';
+}

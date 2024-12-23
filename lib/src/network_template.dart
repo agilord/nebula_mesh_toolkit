@@ -100,7 +100,7 @@ class Template {
 @JsonSerializable()
 class Host {
   final String name;
-  final String address;
+  String? address;
   final String? os;
   final Listen? listen;
   final Tun? tun;
@@ -109,7 +109,7 @@ class Host {
 
   Host({
     required this.name,
-    required this.address,
+    this.address,
     this.os,
     this.listen,
     this.tun,

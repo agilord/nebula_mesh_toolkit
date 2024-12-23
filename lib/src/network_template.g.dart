@@ -80,7 +80,7 @@ Map<String, dynamic> _$TemplateToJson(Template instance) => <String, dynamic>{
 
 Host _$HostFromJson(Map<String, dynamic> json) => Host(
       name: json['name'] as String,
-      address: json['address'] as String,
+      address: json['address'] as String?,
       os: json['os'] as String?,
       listen: json['listen'] == null
           ? null
@@ -96,7 +96,7 @@ Host _$HostFromJson(Map<String, dynamic> json) => Host(
 
 Map<String, dynamic> _$HostToJson(Host instance) => <String, dynamic>{
       'name': instance.name,
-      'address': instance.address,
+      if (instance.address case final value?) 'address': value,
       if (instance.os case final value?) 'os': value,
       if (instance.listen?.toJson() case final value?) 'listen': value,
       if (instance.tun?.toJson() case final value?) 'tun': value,

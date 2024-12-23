@@ -29,10 +29,9 @@ templates:
         address: 192.168.100.10/24
   
   - groups: ['admin']
+    # Note: hosts without `address` field will get address auto-assigned from the first network CIDR
     hosts:
       - name: notebook-1
-        address: 192.168.100.20/24
         os: windows
       - name: mobile-1
-        address: 192.168.100.21/24
         os: android

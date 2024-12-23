@@ -44,14 +44,13 @@ class _NetworkGenerator {
   late final _lighthousesStaticHostMap = Map.fromEntries(_lighthouses
       .where((e) =>
           e.host.publicAddresses != null && e.host.publicAddresses!.isNotEmpty)
-      .map((e) => MapEntry(e.host.address, e.host.publicAddresses ?? [])));
+      .map((e) => MapEntry(e.host.address!, e.host.publicAddresses ?? [])));
 
   late final File _allCaCrtFile;
   late final List<Certificate> _validCaCerts;
 
   late final _hostsFile =
       File(p.join(outputPath, 'etc', '${network.domain}.hosts'));
-  final _hostsMap = <String, String>{};
 
   Future<void> generateArtifacts({
     NebulaAssets? assets,
@@ -73,6 +72,8 @@ class _NetworkGenerator {
   }
 
   Future<void> _readAndWriteHostsFile() async {
+    final hostToIp = <String, String>{};
+    final ipToHost = <String, String>{};
     final whitespaces = RegExp(r'\s+');
     if (await _hostsFile.exists()) {
       final lines = await _hostsFile.readAsLines();
@@ -81,16 +82,55 @@ class _NetworkGenerator {
         final parts =
             line.split(whitespaces).where((s) => s.isNotEmpty).toList();
         if (parts.length == 1) continue;
-        _hostsMap[parts[1].split('.').first] = parts[0];
+        final host = parts[1].split('.').first;
+        if (hostToIp.containsKey(host)) {
+          throw AssertionError('Repeated host name in hosts file: $host');
+        }
+        hostToIp[host] = parts[0];
+        if (ipToHost.containsKey(parts[0])) {
+          throw AssertionError('Repeated IP name in hosts file: ${parts[0]}');
+        }
+        ipToHost[parts[0]] = host;
       }
     }
 
     for (final entry in _entries) {
-      _hostsMap[entry.host.name] = entry.host.address.split('/').first;
+      final address = entry.host.address;
+      // a specified address always gets an override
+      if (address != null) {
+        final ip = address.split('/').first;
+        final oldIp = hostToIp[entry.host.name];
+        if (oldIp != null) {
+          ipToHost.remove(oldIp);
+        }
+        hostToIp[entry.host.name] = ip;
+        ipToHost[ip] = entry.host.name;
+      }
+    }
+
+    CidrGenerator? generator;
+    for (final entry in _entries) {
+      final address = entry.host.address;
+      if (address != null) continue;
+
+      if (network.addresses == null || network.addresses!.isEmpty) {
+        throw AssertionError(
+            'Need to specify network-level `addresses` to automatically generate host `address`.');
+      }
+      generator ??= CidrGenerator(network.addresses!.first);
+      for (;;) {
+        final next = generator.next();
+        final ip = next.split('/').first;
+        if (ipToHost.containsKey(ip)) continue;
+        entry.host.address = next;
+        ipToHost[ip] = entry.host.name;
+        hostToIp[entry.host.name] = ip;
+        break;
+      }
     }
 
     await _hostsFile.parent.create(recursive: true);
-    final entries = _hostsMap.entries.toList()
+    final entries = hostToIp.entries.toList()
       ..sort((a, b) => a.value.compareTo(b.value));
     final padding = entries.map((e) => e.value.length).reduce(max);
     final content = entries.map((e) {
@@ -218,7 +258,7 @@ class _HostGenerator {
           p.join(_parent.outputPath, 'ca', 'keys', caCert.canonicalId);
       await _parent._cli.sign(
         caPrefix: caPrefix,
-        ip: entry.host.address,
+        ip: entry.host.address!,
         name: entry.host.name,
         pubKeyPath: '$keyPrefix.pub',
         outputPrefix: hostCertPrefix,
@@ -252,7 +292,7 @@ class _HostGenerator {
             ? _parent._entries
                 .where(
                     (x) => x.template.groups?.contains(e.substring(1)) ?? false)
-                .map((x) => x.host.address.split('/').first)
+                .map((x) => x.host.address!.split('/').first)
             : [e])
         .toSet()
         .toList();
@@ -269,7 +309,7 @@ class _HostGenerator {
       lighthouse: entry.isLighthouse
           ? Lighthouse(amLighthouse: true)
           : Lighthouse(
-              hosts: _parent._lighthouses.map((e) => e.host.address).toList(),
+              hosts: _parent._lighthouses.map((e) => e.host.address!).toList(),
             ),
       listen: entry.host.listen ?? entry.template.listen,
       tun: entry.template.tun ?? entry.host.tun ?? _generateTun(),

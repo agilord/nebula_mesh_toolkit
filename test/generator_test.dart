@@ -203,8 +203,8 @@ void main() {
           [
             '192.168.100.1  lighthouse-1.neb.internal',
             '192.168.100.10 server-1.neb.internal',
-            '192.168.100.20 notebook-1.neb.internal',
-            '192.168.100.21 mobile-1.neb.internal',
+            '192.168.100.2  notebook-1.neb.internal',
+            '192.168.100.3  mobile-1.neb.internal',
           ],
         );
       } finally {
