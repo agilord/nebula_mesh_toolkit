@@ -25,7 +25,7 @@ describes a simple network with some roles:
 ```yaml
 domain: neb.internal
 cipher: aes
-duration: 182d
+expiry: 182d
 
 templates:
   - groups: ['lighthouse']

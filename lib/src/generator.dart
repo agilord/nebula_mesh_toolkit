@@ -91,7 +91,7 @@ class _NetworkGenerator {
     final newCaCert = await _cli.ca(
       name: network.domain,
       outputPrefix: tempCAPrefix,
-      duration: translateDuration(network.duration),
+      duration: translateDuration(network.expiry),
     );
     final caFingerprint = newCaCert.fingerprint;
     if (caFingerprint == null || caFingerprint.isEmpty) {

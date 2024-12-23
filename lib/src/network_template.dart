@@ -19,8 +19,8 @@ class Network {
 
   final String? os;
 
-  final String? duration;
-
+  /// The CA expiry duration in the format of `<n>y<n>d<n>h<n>m<n>s`.
+  final String? expiry;
   final String? renew;
 
   final List<Template> templates;
@@ -29,7 +29,7 @@ class Network {
     required this.domain,
     this.cipher,
     this.os,
-    this.duration,
+    this.expiry,
     this.renew,
     required this.templates,
   });
