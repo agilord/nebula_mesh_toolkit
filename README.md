@@ -12,7 +12,7 @@ final config = NebulaConfig(
   staticHostMap: { '192.168.10.1': ['lighthouse-ip.example.com:4242']},
   /* ... */
 );
-print(config.toYamlString());
+print(config.toYamlString()); // prints yaml content to stdout
 ```
 
 ## Define a network and generate artifacts
@@ -106,13 +106,24 @@ The artifact generation creates the following output structure:
 - The tool generates multiple CA keys in the `ca/keys/` directory.
 - The valid key certificates are copied into the `ca/<domain>.ca.crt` file (copied to each host too).
 - The host public key is signed with each valid CA certificate and stored in the `hosts/<host>/certs/` directory.
-- The valid host certificates are copied into the `hosts/<host>/etc/<host>.<domain>.crt` file.
+- The latest valid host certificate is copied into the `hosts/<host>/etc/<host>.<domain>.crt` file.
+
+## Address space generation
+
+The tool generates addresses dynamically using the first specified CIDR range
+from the `addresses` field. Lighthouse instances will get assigned available IPs
+from the beginning of the range, while other hosts will get available IPs from
+the end of the range.
+
+When combining with fixed addresses, the best practice would be to reserve the
+first 8-16 values to lighthouses, and start the fixed IPs from there. The
+dynamic IPs should not interfere with them.
 
 ## Limitations
 
 **Planned improvements**:
 - The script is tested only on Linux (yet).
-- Firewall presets are not part of the network (yet).
+- Firewall presets are not part of the network config (yet).
 
 **Outside of the scope of this toolkit**:
 - The artifacts must be copied to the hosts separately.
