@@ -63,21 +63,21 @@ void main() {
                   'ca/keys/${c.canonicalId}.key',
                 ],
               ),
-          'ca/nebula-1.ca.crt',
+          'ca/neb.internal.ca.crt',
           'hosts/lighthouse-1/bin/nebula',
           'hosts/lighthouse-1/bin/nebula-cert',
           ...hostCerts('lighthouse-1'),
-          'hosts/lighthouse-1/etc/nebula-1.ca.crt',
-          'hosts/lighthouse-1/etc/nebula-1-lighthouse-1.crt',
-          'hosts/lighthouse-1/etc/nebula-1-lighthouse-1.key',
-          'hosts/lighthouse-1/etc/nebula-1-lighthouse-1.pub',
-          'hosts/lighthouse-1/etc/nebula-1-lighthouse-1.yml',
+          'hosts/lighthouse-1/etc/neb.internal.ca.crt',
+          'hosts/lighthouse-1/etc/lighthouse-1.neb.internal.crt',
+          'hosts/lighthouse-1/etc/lighthouse-1.neb.internal.key',
+          'hosts/lighthouse-1/etc/lighthouse-1.neb.internal.pub',
+          'hosts/lighthouse-1/etc/lighthouse-1.neb.internal.yml',
           ...hostCerts('mobile-1'),
-          'hosts/mobile-1/etc/nebula-1.ca.crt',
-          'hosts/mobile-1/etc/nebula-1-mobile-1.crt',
-          'hosts/mobile-1/etc/nebula-1-mobile-1.key',
-          'hosts/mobile-1/etc/nebula-1-mobile-1.pub',
-          'hosts/mobile-1/etc/nebula-1-mobile-1.yml',
+          'hosts/mobile-1/etc/neb.internal.ca.crt',
+          'hosts/mobile-1/etc/mobile-1.neb.internal.crt',
+          'hosts/mobile-1/etc/mobile-1.neb.internal.key',
+          'hosts/mobile-1/etc/mobile-1.neb.internal.pub',
+          'hosts/mobile-1/etc/mobile-1.neb.internal.yml',
           ...hostCerts('notebook-1'),
           'hosts/notebook-1/bin/dist/windows/wintun/LICENSE.txt',
           'hosts/notebook-1/bin/dist/windows/wintun/README.md',
@@ -88,35 +88,35 @@ void main() {
           'hosts/notebook-1/bin/dist/windows/wintun/include/wintun.h',
           'hosts/notebook-1/bin/nebula-cert.exe',
           'hosts/notebook-1/bin/nebula.exe',
-          'hosts/notebook-1/etc/nebula-1.ca.crt',
-          'hosts/notebook-1/etc/nebula-1-notebook-1.crt',
-          'hosts/notebook-1/etc/nebula-1-notebook-1.key',
-          'hosts/notebook-1/etc/nebula-1-notebook-1.pub',
-          'hosts/notebook-1/etc/nebula-1-notebook-1.yml',
+          'hosts/notebook-1/etc/neb.internal.ca.crt',
+          'hosts/notebook-1/etc/notebook-1.neb.internal.crt',
+          'hosts/notebook-1/etc/notebook-1.neb.internal.key',
+          'hosts/notebook-1/etc/notebook-1.neb.internal.pub',
+          'hosts/notebook-1/etc/notebook-1.neb.internal.yml',
           ...hostCerts('server-1'),
           'hosts/server-1/bin/nebula',
           'hosts/server-1/bin/nebula-cert',
-          'hosts/server-1/etc/nebula-1.ca.crt',
-          'hosts/server-1/etc/nebula-1-server-1.crt',
-          'hosts/server-1/etc/nebula-1-server-1.key',
-          'hosts/server-1/etc/nebula-1-server-1.pub',
-          'hosts/server-1/etc/nebula-1-server-1.yml',
+          'hosts/server-1/etc/neb.internal.ca.crt',
+          'hosts/server-1/etc/server-1.neb.internal.crt',
+          'hosts/server-1/etc/server-1.neb.internal.key',
+          'hosts/server-1/etc/server-1.neb.internal.pub',
+          'hosts/server-1/etc/server-1.neb.internal.yml',
         });
 
         expect(
-          _loadYamlAsMap(p.join(
-              temp.path, 'hosts/lighthouse-1/etc/nebula-1-lighthouse-1.yml')),
+          _loadYamlAsMap(p.join(temp.path,
+              'hosts/lighthouse-1/etc/lighthouse-1.neb.internal.yml')),
           {
             'pki': {
-              'ca': 'nebula-1.ca.crt',
-              'cert': 'nebula-1-lighthouse-1.crt',
-              'key': 'nebula-1-lighthouse-1.key',
+              'ca': 'neb.internal.ca.crt',
+              'cert': 'lighthouse-1.neb.internal.crt',
+              'key': 'lighthouse-1.neb.internal.key',
             },
             'lighthouse': {'am_lighthouse': true},
             'listen': {'host': '0.0.0.0', 'port': 4242},
             'cipher': 'aes',
             'relay': {'am_relay': true},
-            'tun': {'dev': 'tun1'},
+            'tun': {'dev': 'tun24'},
             'firewall': {
               'outbound': [
                 {'port': 'any', 'proto': 'any', 'host': 'any'},
@@ -129,13 +129,13 @@ void main() {
         );
 
         expect(
-          _loadYamlAsMap(
-              p.join(temp.path, 'hosts/server-1/etc/nebula-1-server-1.yml')),
+          _loadYamlAsMap(p.join(
+              temp.path, 'hosts/server-1/etc/server-1.neb.internal.yml')),
           {
             'pki': {
-              'ca': 'nebula-1.ca.crt',
-              'cert': 'nebula-1-server-1.crt',
-              'key': 'nebula-1-server-1.key',
+              'ca': 'neb.internal.ca.crt',
+              'cert': 'server-1.neb.internal.crt',
+              'key': 'server-1.neb.internal.key',
             },
             'static_host_map': {
               '192.168.100.1/24': [
@@ -151,7 +151,7 @@ void main() {
             'relay': {
               'relays': ['192.168.100.1']
             },
-            'tun': {'dev': 'tun1'},
+            'tun': {'dev': 'tun24'},
             'firewall': {
               'outbound': [
                 {'port': 'any', 'proto': 'any', 'host': 'any'},
@@ -165,12 +165,12 @@ void main() {
 
         expect(
           _loadYamlAsMap(p.join(
-              temp.path, 'hosts/notebook-1/etc/nebula-1-notebook-1.yml')),
+              temp.path, 'hosts/notebook-1/etc/notebook-1.neb.internal.yml')),
           {
             'pki': {
-              'ca': 'nebula-1.ca.crt',
-              'cert': 'nebula-1-notebook-1.crt',
-              'key': 'nebula-1-notebook-1.key'
+              'ca': 'neb.internal.ca.crt',
+              'cert': 'notebook-1.neb.internal.crt',
+              'key': 'notebook-1.neb.internal.key'
             },
             'static_host_map': {
               '192.168.100.1/24': [
@@ -182,7 +182,7 @@ void main() {
               'hosts': ['192.168.100.1/24'],
             },
             'cipher': 'aes',
-            'tun': {'dev': 'tun1'},
+            'tun': {'dev': 'tun24'},
             'firewall': {
               'outbound': [
                 {'port': 'any', 'proto': 'any', 'host': 'any'},

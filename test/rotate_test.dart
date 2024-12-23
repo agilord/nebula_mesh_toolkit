@@ -33,7 +33,7 @@ void main() {
       try {
         final cli = NebulaCli(path: cliTemp.path);
 
-        final network = Network(id: 12, templates: [
+        final network = Network(domain: 'neb.internal', templates: [
           Template(
             hosts: [Host(name: 'lh', address: '192.168.11.1/24')],
           ),
@@ -42,7 +42,7 @@ void main() {
         final gh = GitHubNebulaAssets(cacheDir: '.dart_tool/cached-github');
         await network.generateArtifacts(outputPath: temp.path, assets: gh);
         await cli.testConfig(
-          configPath: p.join(temp.path, 'hosts/lh/etc/nebula-12-lh.yml'),
+          configPath: p.join(temp.path, 'hosts/lh/etc/lh.neb.internal.yml'),
           workingDirectory: p.join(temp.path, 'hosts/lh/etc'),
         );
         expect(listFiles(), hasLength(14));
@@ -52,17 +52,17 @@ void main() {
         expect(listFiles(), hasLength(20));
 
         final caCertContent =
-            await File(p.join(temp.path, 'ca', 'nebula-12.ca.crt'))
+            await File(p.join(temp.path, 'ca', 'neb.internal.ca.crt'))
                 .readAsString();
         expect(caCertContent.split('NEBULA CERTIFICATE').length, 5);
 
         final hostCertContent = await File(
-                p.join(temp.path, 'hosts', 'lh', 'etc', 'nebula-12-lh.crt'))
+                p.join(temp.path, 'hosts', 'lh', 'etc', 'lh.neb.internal.crt'))
             .readAsString();
         expect(hostCertContent.split('NEBULA CERTIFICATE').length, 3);
 
         await cli.testConfig(
-          configPath: p.join(temp.path, 'hosts/lh/etc/nebula-12-lh.yml'),
+          configPath: p.join(temp.path, 'hosts/lh/etc/lh.neb.internal.yml'),
           workingDirectory: p.join(temp.path, 'hosts/lh/etc'),
         );
 

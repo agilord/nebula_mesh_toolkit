@@ -1,4 +1,4 @@
-id: 1 # the tun device id + network identifier
+domain: neb.internal
 cipher: aes
 duration: 2y
 

@@ -1,3 +1,12 @@
+## 0.4.0
+
+**Breaking changes**:
+- `id` and `name` are removed:
+  - Instead of `id` and `name`, one must specify the `domain` of the network. One may use the `.internal` TLD.
+  - Instead of `id`, one can specify the `tun` configuration on both the `Template` and the `Host`. When absent,
+    `windows` machines get auto-generated tun device name.
+- The generator output follows the FQDN naming using the host name and the network domain.
+
 ## 0.3.2
 
 - Fix: use only the latest certificate for hosts (still keeping all the valid ones just in case they are useful).

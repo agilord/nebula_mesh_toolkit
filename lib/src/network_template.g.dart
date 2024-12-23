@@ -9,8 +9,7 @@ part of 'network_template.dart';
 // **************************************************************************
 
 Network _$NetworkFromJson(Map<String, dynamic> json) => Network(
-      name: json['name'] as String?,
-      id: (json['id'] as num).toInt(),
+      domain: json['domain'] as String,
       cipher: json['cipher'] as String?,
       os: json['os'] as String?,
       duration: json['duration'] as String?,
@@ -21,8 +20,7 @@ Network _$NetworkFromJson(Map<String, dynamic> json) => Network(
     );
 
 Map<String, dynamic> _$NetworkToJson(Network instance) => <String, dynamic>{
-      if (instance.name case final value?) 'name': value,
-      'id': instance.id,
+      'domain': instance.domain,
       if (instance.cipher case final value?) 'cipher': value,
       if (instance.os case final value?) 'os': value,
       if (instance.duration case final value?) 'duration': value,

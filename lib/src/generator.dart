@@ -45,7 +45,6 @@ class _NetworkGenerator {
           e.host.publicAddresses != null && e.host.publicAddresses!.isNotEmpty)
       .map((e) => MapEntry(e.host.address, e.host.publicAddresses ?? [])));
 
-  late final _netName = 'nebula-${network.id}';
   late final File _allCaCrtFile;
   late final List<Certificate> _validCaCerts;
 
@@ -87,10 +86,10 @@ class _NetworkGenerator {
       }
     }
 
-    final tempCAPrefix = p.join(_tempRoot.path, 'ca', _netName);
+    final tempCAPrefix = p.join(_tempRoot.path, 'ca', network.domain);
     await File('$tempCAPrefix.crt').parent.create(recursive: true);
     final newCaCert = await _cli.ca(
-      name: network.name ?? _netName,
+      name: network.domain,
       outputPrefix: tempCAPrefix,
       duration: translateDuration(network.duration),
     );
@@ -124,7 +123,7 @@ class _NetworkGenerator {
     if (allCaCertContent.isEmpty) {
       throw AssertionError('No valid CA cert available.');
     }
-    _allCaCrtFile = File(p.join(outputPath, 'ca', '$_netName.ca.crt'));
+    _allCaCrtFile = File(p.join(outputPath, 'ca', '${network.domain}.ca.crt'));
     await _allCaCrtFile.writeAsString(allCaCertContent.toString());
   }
 }
@@ -135,20 +134,20 @@ class _HostGenerator {
 
   _HostGenerator(this._parent, this.entry);
 
-  late final _netName = _parent._netName;
   late final _hostDir =
       Directory(p.join(_parent.outputPath, 'hosts', entry.host.name));
   late final _resolvedOS = expandOS(
       entry.host.os ?? entry.template.os ?? _parent.network.os ?? 'linux');
   late final _etcDir = Directory(p.join(_hostDir.path, 'etc'));
-  late final _qualifiedName = '$_netName-${entry.host.name}';
+  late final _qualifiedName = '${entry.host.name}.${_parent.network.domain}';
 
   Future<void> generateArtifacts() async {
     await _hostDir.create(recursive: true);
     await _extractBinFiles();
 
     await _etcDir.create(recursive: true);
-    await _parent._allCaCrtFile.copy(p.join(_etcDir.path, '$_netName.ca.crt'));
+    await _parent._allCaCrtFile
+        .copy(p.join(_etcDir.path, '${_parent.network.domain}.ca.crt'));
 
     await _updateCertificates();
     await _updateConfig();
@@ -226,7 +225,7 @@ class _HostGenerator {
 
     final config = Nebula(
       pki: Pki(
-        ca: '$_netName.ca.crt',
+        ca: '${_parent.network.domain}.ca.crt',
         cert: '$_qualifiedName.crt',
         key: '$_qualifiedName.key',
       ),
@@ -239,7 +238,7 @@ class _HostGenerator {
             ),
       listen: entry.host.listen ?? entry.template.listen,
       tun: Tun(
-        dev: tunDeviceName(_resolvedOS, _parent.network.id),
+        dev: tunDeviceName(_resolvedOS, _parent.network.domain),
       ),
       punchy: entry.template.punchy,
       relay: relay,

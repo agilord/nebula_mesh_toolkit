@@ -23,7 +23,7 @@ in a single source, keeping it consistent in a single place. E.g. the following
 describes a simple network with some roles:
 
 ```yaml
-id: 1 # the tun device id + network identifier
+domain: neb.internal
 cipher: aes
 duration: 182d
 
@@ -71,7 +71,7 @@ The artifact generation creates the following output structure:
 |  |  |- 20241213202756-2a3ebc600e3211203a158e1ddbb9b4d2b4f53d7b70280d8a433a1ebf4f2aa9a8.crt
 |  |  |- 20241213202756-2a3ebc600e3211203a158e1ddbb9b4d2b4f53d7b70280d8a433a1ebf4f2aa9a8.crt.json
 |  |  |- 20241213202756-2a3ebc600e3211203a158e1ddbb9b4d2b4f53d7b70280d8a433a1ebf4f2aa9a8.crt.key
-|  |- nebula-1.ca.crt
+|  |- neb.internal.ca.crt
 |- hosts
 |  |- lighthouse-1
 |  |  |- bin
@@ -85,11 +85,11 @@ The artifact generation creates the following output structure:
 |  |  |  |- 20241213202756-2a3ebc600e3211203a158e1ddbb9b4d2b4f53d7b70280d8a433a1ebf4f2aa9a8.crt.json
 |  |  |  |- 20241213202756-2a3ebc600e3211203a158e1ddbb9b4d2b4f53d7b70280d8a433a1ebf4f2aa9a8.png
 |  |  |- etc
-|  |    |- nebula-1.ca.crt
-|  |    |- nebula-1-lighthouse-1.crt
-|  |    |- nebula-1-lighthouse-1.key
-|  |    |- nebula-1-lighthouse-1.pub
-|  |    |- nebula-1-lighthouse-1.yml
+|  |    |- neb.internal.ca.crt
+|  |    |- lighthouse-1.neb.internal.crt
+|  |    |- lighthouse-1.neb.internal.key
+|  |    |- lighthouse-1.neb.internal.pub
+|  |    |- lighthouse-1.neb.internal.yml
 |  |- server-1
 |  |  |- ...
 |  |- notebook-1
@@ -101,9 +101,9 @@ The artifact generation creates the following output structure:
 ## Key rotation
 
 - The tool generates multiple CA keys in the `ca/keys/` directory.
-- The valid key certificates are copied into the `ca/<nebula>-<id>.ca.crt` file (copied to each host too).
-- The host public key is signed with each valid CA certificate and stored in the `/hosts/<host>/certs/` directory.
-- The valid host certificates are copied into the `ca/<nebula>-<id>-<host-name>.crt` file.
+- The valid key certificates are copied into the `ca/<domain>.ca.crt` file (copied to each host too).
+- The host public key is signed with each valid CA certificate and stored in the `hosts/<host>/certs/` directory.
+- The valid host certificates are copied into the `hosts/<host>/etc/<host>.<domain>.crt` file.
 
 ## Limitations
 

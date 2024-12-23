@@ -8,12 +8,12 @@ part 'network_template.g.dart';
 
 @JsonSerializable()
 class Network {
-  /// The name of the CA.
-  final String? name;
-
-  /// The number part of the device id (as the name may be fixed format on
-  /// certain platforms).
-  final int id;
+  /// The domain name of the network.
+  ///
+  /// Will be used as CA name and also to fully qualify host names.
+  ///
+  /// Note: for internal nebula network, use the `.internal` TLD.
+  final String domain;
 
   final String? cipher;
 
@@ -26,8 +26,7 @@ class Network {
   final List<Template> templates;
 
   Network({
-    this.name,
-    required this.id,
+    required this.domain,
     this.cipher,
     this.os,
     this.duration,
