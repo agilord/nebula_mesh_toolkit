@@ -122,7 +122,7 @@ class _NetworkGenerator {
 
       final existingIp = hostToIp[entry.host.name];
       if (existingIp != null) {
-        entry.host.address = '$existingIp/${generator!.prefixBitsValue}';
+        entry.host.address = '$existingIp/${generator.prefixBitsValue}';
       }
 
       for (;;) {
