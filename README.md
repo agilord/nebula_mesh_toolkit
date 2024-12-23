@@ -26,6 +26,7 @@ describes a simple network with some roles:
 domain: neb.internal
 cipher: aes
 expiry: 182d
+keep: 45d
 
 templates:
   - groups: ['lighthouse']

@@ -21,7 +21,9 @@ class Network {
 
   /// The CA expiry duration in the format of `<n>y<n>d<n>h<n>m<n>s`.
   final String? expiry;
-  final String? renew;
+
+  /// The current CA is kept for at least this period, in the format of `<n>y<n>d<n>h<n>m<n>s`.
+  final String? keep;
 
   final List<Template> templates;
 
@@ -30,7 +32,7 @@ class Network {
     this.cipher,
     this.os,
     this.expiry,
-    this.renew,
+    this.keep,
     required this.templates,
   });
 

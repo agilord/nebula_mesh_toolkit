@@ -13,7 +13,7 @@ Network _$NetworkFromJson(Map<String, dynamic> json) => Network(
       cipher: json['cipher'] as String?,
       os: json['os'] as String?,
       expiry: json['expiry'] as String?,
-      renew: json['renew'] as String?,
+      keep: json['keep'] as String?,
       templates: (json['templates'] as List<dynamic>)
           .map((e) => Template.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -24,7 +24,7 @@ Map<String, dynamic> _$NetworkToJson(Network instance) => <String, dynamic>{
       if (instance.cipher case final value?) 'cipher': value,
       if (instance.os case final value?) 'os': value,
       if (instance.expiry case final value?) 'expiry': value,
-      if (instance.renew case final value?) 'renew': value,
+      if (instance.keep case final value?) 'keep': value,
       'templates': instance.templates.map((e) => e.toJson()).toList(),
     };
 

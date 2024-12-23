@@ -1,6 +1,7 @@
 domain: neb.internal
 cipher: aes
 expiry: 2y
+keep: 90d
 
 templates:
   - groups: ['lighthouse']

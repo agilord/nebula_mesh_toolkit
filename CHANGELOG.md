@@ -7,6 +7,7 @@
     `windows` machines get auto-generated tun device name.
 - The generator output follows the FQDN naming using the host name and the network domain.
 - The default CA expiration time `duration` is renamed to `expiry`.
+- The default CA renewal time `renew` is renamed to `keep`.
 
 ## 0.3.2
 

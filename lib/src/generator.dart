@@ -75,11 +75,11 @@ class _NetworkGenerator {
   }
 
   Future<void> _generateNewCaKey() async {
-    final parsedRenew = parseDuration(network.renew);
-    if (parsedRenew != null) {
+    final parsedKeepDuration = parseDuration(network.keep);
+    if (parsedKeepDuration != null) {
       final currentCerts =
           await loadCertificatesFromDirectory(p.join(outputPath, 'ca', 'keys'));
-      final threshold = DateTime.now().subtract(parsedRenew);
+      final threshold = DateTime.now().subtract(parsedKeepDuration);
       if (currentCerts
           .any((c) => c.certificate.details!.notBefore!.isAfter(threshold))) {
         return;
