@@ -39,7 +39,8 @@ class _NetworkGenerator {
 
   late final _entries = network.templates
       .expand((t) => t.hosts.map((h) => _HostTemplate(h, t)))
-      .toList();
+      .toList()
+    ..sort();
   late final _lighthouses = _entries.where((e) => e.isLighthouse).toList();
   late final _lighthousesStaticHostMap = Map.fromEntries(_lighthouses
       .where((e) =>
@@ -130,8 +131,9 @@ class _NetworkGenerator {
     }
 
     await _hostsFile.parent.create(recursive: true);
-    final entries = hostToIp.entries.toList()
-      ..sort((a, b) => a.value.compareTo(b.value));
+    final entries = _entries
+        .map((e) => MapEntry(e.host.name, e.host.address!.split('/').first))
+        .toList();
     final padding = entries.map((e) => e.value.length).reduce(max);
     final content = entries.map((e) {
       return '${e.value.padRight(padding, ' ')} ${e.key}.${network.domain}\n';
@@ -345,7 +347,7 @@ class _HostGenerator {
   }
 }
 
-class _HostTemplate {
+class _HostTemplate implements Comparable<_HostTemplate> {
   final Host host;
   final Template template;
 
@@ -353,6 +355,17 @@ class _HostTemplate {
 
   late final isLighthouse =
       (template.groups ?? const []).contains('lighthouse');
+
+  @override
+  int compareTo(_HostTemplate other) {
+    if (isLighthouse && !other.isLighthouse) {
+      return -1;
+    }
+    if (!isLighthouse && other.isLighthouse) {
+      return 1;
+    }
+    return host.name.compareTo(other.host.name);
+  }
 }
 
 Firewall? _mergeFirewall(Firewall? defined, List<String>? presetNames) {
