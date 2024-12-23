@@ -9,6 +9,9 @@
 - The default CA expiration time `duration` is renamed to `expiry`.
 - The default CA renewal time `renew` is renamed to `keep`.
 
+**New features**:
+- `Network.addresses` will be passed to the CA certificate to limit IP ranges.
+
 ## 0.3.2
 
 - Fix: use only the latest certificate for hosts (still keeping all the valid ones just in case they are useful).

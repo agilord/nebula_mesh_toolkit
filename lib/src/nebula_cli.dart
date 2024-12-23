@@ -51,11 +51,13 @@ class NebulaCli {
     required String name,
     required String outputPrefix,
     String? duration,
+    List<String>? ips,
   }) async {
     await _run([
       _certBin,
       'ca',
       if (duration != null) ...['-duration', duration],
+      if (ips != null) ...['-ips', ips.join(',')],
       '-name',
       name,
       '-out-crt',

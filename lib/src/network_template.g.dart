@@ -10,6 +10,9 @@ part of 'network_template.dart';
 
 Network _$NetworkFromJson(Map<String, dynamic> json) => Network(
       domain: json['domain'] as String,
+      addresses: (json['addresses'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
       cipher: json['cipher'] as String?,
       os: json['os'] as String?,
       expiry: json['expiry'] as String?,
@@ -21,6 +24,7 @@ Network _$NetworkFromJson(Map<String, dynamic> json) => Network(
 
 Map<String, dynamic> _$NetworkToJson(Network instance) => <String, dynamic>{
       'domain': instance.domain,
+      if (instance.addresses case final value?) 'addresses': value,
       if (instance.cipher case final value?) 'cipher': value,
       if (instance.os case final value?) 'os': value,
       if (instance.expiry case final value?) 'expiry': value,

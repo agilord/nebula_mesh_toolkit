@@ -15,6 +15,10 @@ class Network {
   /// Note: for internal nebula network, use the `.internal` TLD.
   final String domain;
 
+  /// List of ipv4 address and network in CIDR notation.
+  /// This will limit which ipv4 addresses and networks subordinate certs can use for ip addresses.
+  final List<String>? addresses;
+
   final String? cipher;
 
   final String? os;
@@ -29,6 +33,7 @@ class Network {
 
   Network({
     required this.domain,
+    this.addresses,
     this.cipher,
     this.os,
     this.expiry,

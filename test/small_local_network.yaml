@@ -2,6 +2,8 @@ domain: neb.internal
 cipher: aes
 expiry: 2y
 keep: 90d
+addresses:
+  - 192.168.100.0/24
 
 templates:
   - groups: ['lighthouse']
