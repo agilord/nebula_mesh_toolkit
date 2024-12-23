@@ -39,6 +39,9 @@ Template _$TemplateFromJson(Map<String, dynamic> json) => Template(
       listen: json['listen'] == null
           ? null
           : Listen.fromJson(json['listen'] as Map<String, dynamic>),
+      tun: json['tun'] == null
+          ? null
+          : Tun.fromJson(json['tun'] as Map<String, dynamic>),
       punchy: json['punchy'] == null
           ? null
           : Punchy.fromJson(json['punchy'] as Map<String, dynamic>),
@@ -62,6 +65,7 @@ Map<String, dynamic> _$TemplateToJson(Template instance) => <String, dynamic>{
       if (instance.os case final value?) 'os': value,
       if (instance.staticHostMap case final value?) 'static_host_map': value,
       if (instance.listen?.toJson() case final value?) 'listen': value,
+      if (instance.tun?.toJson() case final value?) 'tun': value,
       if (instance.punchy?.toJson() case final value?) 'punchy': value,
       if (instance.relay?.toJson() case final value?) 'relay': value,
       if (instance.firewallPresets case final value?) 'firewall_presets': value,
@@ -77,6 +81,9 @@ Host _$HostFromJson(Map<String, dynamic> json) => Host(
       listen: json['listen'] == null
           ? null
           : Listen.fromJson(json['listen'] as Map<String, dynamic>),
+      tun: json['tun'] == null
+          ? null
+          : Tun.fromJson(json['tun'] as Map<String, dynamic>),
       duration: json['duration'] as String?,
       publicAddresses: (json['publicAddresses'] as List<dynamic>?)
           ?.map((e) => e as String)
@@ -88,6 +95,7 @@ Map<String, dynamic> _$HostToJson(Host instance) => <String, dynamic>{
       'address': instance.address,
       if (instance.os case final value?) 'os': value,
       if (instance.listen?.toJson() case final value?) 'listen': value,
+      if (instance.tun?.toJson() case final value?) 'tun': value,
       if (instance.duration case final value?) 'duration': value,
       if (instance.publicAddresses case final value?) 'publicAddresses': value,
     };

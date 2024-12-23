@@ -55,6 +55,8 @@ class Template {
 
   final Listen? listen;
 
+  final Tun? tun;
+
   final Punchy? punchy;
 
   final Relay? relay;
@@ -73,6 +75,7 @@ class Template {
     this.os,
     this.staticHostMap,
     this.listen,
+    this.tun,
     this.punchy,
     this.relay,
     this.firewallPresets,
@@ -93,6 +96,7 @@ class Host {
   final String address;
   final String? os;
   final Listen? listen;
+  final Tun? tun;
   final String? duration;
   final List<String>? publicAddresses;
 
@@ -101,6 +105,7 @@ class Host {
     required this.address,
     this.os,
     this.listen,
+    this.tun,
     this.duration,
     this.publicAddresses,
   });

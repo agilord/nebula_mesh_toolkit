@@ -116,7 +116,6 @@ void main() {
             'listen': {'host': '0.0.0.0', 'port': 4242},
             'cipher': 'aes',
             'relay': {'am_relay': true},
-            'tun': {'dev': 'tun24'},
             'firewall': {
               'outbound': [
                 {'port': 'any', 'proto': 'any', 'host': 'any'},
@@ -151,7 +150,6 @@ void main() {
             'relay': {
               'relays': ['192.168.100.1']
             },
-            'tun': {'dev': 'tun24'},
             'firewall': {
               'outbound': [
                 {'port': 'any', 'proto': 'any', 'host': 'any'},

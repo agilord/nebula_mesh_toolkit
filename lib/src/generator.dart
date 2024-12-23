@@ -237,9 +237,7 @@ class _HostGenerator {
               hosts: _parent._lighthouses.map((e) => e.host.address).toList(),
             ),
       listen: entry.host.listen ?? entry.template.listen,
-      tun: Tun(
-        dev: tunDeviceName(_resolvedOS, _parent.network.domain),
-      ),
+      tun: entry.template.tun ?? entry.host.tun ?? _generateTun(),
       punchy: entry.template.punchy,
       relay: relay,
       firewall: _mergeFirewall(
@@ -255,6 +253,20 @@ class _HostGenerator {
     );
     await File(p.join(_etcDir.path, '$_qualifiedName.yml'))
         .writeAsString('${config.toYamlString()}\n');
+  }
+
+  Tun? _generateTun() {
+    final rid = (_parent.network.domain.hashCode.abs() % 16) + 16;
+    if (_resolvedOS.startsWith('windows-')) {
+      return Tun(dev: 'tun$rid');
+    }
+    // String tunDeviceName(String os, String domain) {
+    //   if (os == 'darwin') {
+    //     return 'utun$id';
+    //   }
+    //   return 'tun$id';
+    // }
+    return null;
   }
 }
 

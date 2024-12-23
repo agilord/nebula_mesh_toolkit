@@ -9,11 +9,3 @@ String expandOS(String os) {
   }
   return os;
 }
-
-String tunDeviceName(String os, String domain) {
-  final id = (domain.hashCode.abs() % 16) + 16;
-  if (os == 'darwin') {
-    return 'utun$id';
-  }
-  return 'tun$id';
-}
