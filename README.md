@@ -89,6 +89,7 @@ The artifact generation creates the following output structure:
 |  |  |  |- 20241213202756-2a3ebc600e3211203a158e1ddbb9b4d2b4f53d7b70280d8a433a1ebf4f2aa9a8.png
 |  |  |- etc
 |  |    |- neb.internal.ca.crt
+|  |    |- neb.internal.hosts
 |  |    |- lighthouse-1.neb.internal.crt
 |  |    |- lighthouse-1.neb.internal.key
 |  |    |- lighthouse-1.neb.internal.pub

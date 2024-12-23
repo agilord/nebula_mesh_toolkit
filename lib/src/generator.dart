@@ -181,6 +181,8 @@ class _HostGenerator {
     await _etcDir.create(recursive: true);
     await _parent._allCaCrtFile
         .copy(p.join(_etcDir.path, '${_parent.network.domain}.ca.crt'));
+    await _parent._hostsFile
+        .copy(p.join(_etcDir.path, '${_parent.network.domain}.hosts'));
 
     await _updateCertificates();
     await _updateConfig();
