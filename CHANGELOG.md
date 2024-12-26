@@ -1,3 +1,7 @@
+## 0.4.1
+
+- Fixed host address bug.
+
 ## 0.4.0
 
 **Breaking changes**:

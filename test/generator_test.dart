@@ -142,13 +142,13 @@ void main() {
               'key': 'server-1.neb.internal.key',
             },
             'static_host_map': {
-              '192.168.100.1/24': [
+              '192.168.100.1': [
                 'nebula.example.com:4242',
                 '12.34.56.78:4242',
               ],
             },
             'lighthouse': {
-              'hosts': ['192.168.100.1/24'],
+              'hosts': ['192.168.100.1'],
             },
             'punchy': {'punch': true},
             'cipher': 'aes',
@@ -176,13 +176,13 @@ void main() {
               'key': 'notebook-1.neb.internal.key'
             },
             'static_host_map': {
-              '192.168.100.1/24': [
+              '192.168.100.1': [
                 'nebula.example.com:4242',
                 '12.34.56.78:4242',
               ],
             },
             'lighthouse': {
-              'hosts': ['192.168.100.1/24'],
+              'hosts': ['192.168.100.1'],
             },
             'cipher': 'aes',
             'tun': {'dev': 'tun24'},

@@ -45,7 +45,8 @@ class _NetworkGenerator {
   late final _lighthousesStaticHostMap = Map.fromEntries(_lighthouses
       .where((e) =>
           e.host.publicAddresses != null && e.host.publicAddresses!.isNotEmpty)
-      .map((e) => MapEntry(e.host.address!, e.host.publicAddresses ?? [])));
+      .map((e) => MapEntry(
+          e.host.address!.split('/').first, e.host.publicAddresses ?? [])));
 
   late final File _allCaCrtFile;
   late final List<Certificate> _validCaCerts;
@@ -321,7 +322,9 @@ class _HostGenerator {
       lighthouse: entry.isLighthouse
           ? Lighthouse(amLighthouse: true)
           : Lighthouse(
-              hosts: _parent._lighthouses.map((e) => e.host.address!).toList(),
+              hosts: _parent._lighthouses
+                  .map((e) => e.host.address!.split('/').first)
+                  .toList(),
             ),
       listen: entry.host.listen ?? entry.template.listen,
       tun: entry.template.tun ?? entry.host.tun ?? _generateTun(),
