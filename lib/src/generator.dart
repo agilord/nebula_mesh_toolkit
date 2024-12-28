@@ -224,12 +224,14 @@ class _HostGenerator {
       Directory(p.join(_parent.outputPath, 'hosts', entry.host.name));
   late final _resolvedOS = expandOS(
       entry.host.os ?? entry.template.os ?? _parent.network.os ?? 'linux');
+  late final _binDir = Directory(p.join(_hostDir.path, 'bin'));
   late final _etcDir = Directory(p.join(_hostDir.path, 'etc'));
   late final _qualifiedName = '${entry.host.name}.${_parent.network.domain}';
 
   Future<void> generateArtifacts() async {
     await _hostDir.create(recursive: true);
     await _extractBinFiles();
+    await _updateStartScript();
 
     await _etcDir.create(recursive: true);
     await _parent._allCaCrtFile
@@ -243,9 +245,29 @@ class _HostGenerator {
 
   Future<void> _extractBinFiles() async {
     if (_resolvedOS != 'android') {
-      final bin = p.join(_hostDir.path, 'bin');
-      await Directory(bin).create(recursive: true);
-      await _parent._assets.extractReleaseTo(os: _resolvedOS, targetPath: bin);
+      await _binDir.create(recursive: true);
+      await _parent._assets
+          .extractReleaseTo(os: _resolvedOS, targetPath: _binDir.path);
+    }
+  }
+
+  Future<void> _updateStartScript() async {
+    if (_resolvedOS == 'android') {
+      return;
+    }
+    if (_resolvedOS.startsWith('windows-')) {
+      // TODO: implement start.bat in a similar way
+    } else {
+      final content = [
+        '#!/usr/bin/env bash',
+        'set -e',
+        r'BIN_DIR=$(dirname $(readlink -f "$0"))',
+        r'cd "$BIN_DIR/../etc"',
+        '"\$BIN_DIR/nebula" -config $_qualifiedName.yml',
+      ].map((l) => '$l\n').join('');
+      final startFile = File(p.join(_binDir.path, 'start.sh'));
+      await startFile.writeAsString(content);
+      await Process.run('chmod', ['+x', startFile.path]); // ignore if absent
     }
   }
 

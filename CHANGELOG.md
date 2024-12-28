@@ -1,6 +1,7 @@
 ## 0.4.1
 
 - Fixed host address bug.
+- Generates `bin/start.sh` for non-Windows hosts.
 
 ## 0.4.0
 

@@ -45,11 +45,11 @@ void main() {
           configPath: p.join(temp.path, 'hosts/lh/etc/lh.neb.internal.yml'),
           workingDirectory: p.join(temp.path, 'hosts/lh/etc'),
         );
-        expect(listFiles(), hasLength(16));
+        expect(listFiles(), hasLength(17));
 
         // second run
         await network.generateArtifacts(outputPath: temp.path, assets: gh);
-        expect(listFiles(), hasLength(22));
+        expect(listFiles(), hasLength(23));
 
         final caCertContent =
             await File(p.join(temp.path, 'ca', 'neb.internal.ca.crt'))
@@ -69,7 +69,7 @@ void main() {
         // keep current ca for longer
         final n2 = Network.fromJson(network.toJson()..['keep'] = '1h');
         await n2.generateArtifacts(outputPath: temp.path, assets: gh);
-        expect(listFiles(), hasLength(22));
+        expect(listFiles(), hasLength(23));
       } finally {
         await temp.delete(recursive: true);
       }
